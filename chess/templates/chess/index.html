@@ -1,0 +1,29 @@
+{% extends "chess/layout.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    {% if request.user.is_authenticated %}
+        <h1>Hello, {{ request.user }}</h1>
+        <a href="{% url 'logout' %}">Log Out</a>
+        <div id="newPost">
+            <h5>New Post</h5>
+            <form>
+                <input type="text" id="description" class="form-control">
+                <input type="submit" class="btn btn-primary">
+            </form>    
+        </div>
+    {% else %}
+        <a href="{% url 'login' %}">Log In</a>
+        <a href="{% url 'register' %}">Register</a>
+    {% endif %}
+
+    <div id="posts">
+
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'chess/index.js' %}"></script>
+{% endblock %}
