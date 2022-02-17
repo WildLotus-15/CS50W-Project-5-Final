@@ -5,11 +5,18 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 function load_posts(addon) {
+    if (addon.includes('?')) {
+        addon += ''
+    } else {
+        document.querySelector('#profile').style.display = "none"
+    }
     fetch(`load_posts${addon}`)
     .then(response => response.json())
     .then(response => {
-        console.log(response.posts)
+        document.querySelector('#posts').innerHTML = ''
         response.posts.forEach(post => build_post(post))
+
+        console.log(response.posts)
     })
 }
 
@@ -19,8 +26,11 @@ function build_post(post) {
 
     const author = document.createElement('div')
     author.className = "card-title"
+    author.id = "post-author"
     author.innerHTML = post.author_username
     post_card.append(author)
+
+    author.addEventListener('click', () => show_profile(post.author_id))
 
     const description = document.createElement('div')
     description.className = "card-text"
@@ -31,6 +41,18 @@ function build_post(post) {
     timestamp.className = "text-muted"
     timestamp.innerHTML = post.timestamp
     post_card.append(timestamp)
+
+    const likes = document.createElement('button')
+    if (post.liked) {
+        likes.innerHTML = `Unlike ${post.likes}`
+    } else {
+        likes.innerHTML = `Like ${post.likes}`
+    }
+    likes.className = "btn btn-primary"
+    likes.id = `post-likes-${post.id}`
+    post_card.append(likes)
+
+    likes.addEventListener('click', () => update_like(post.id, post.likes))
 
     const comment_amount = document.createElement('div')
     comment_amount.innerHTML = post.comments
@@ -48,6 +70,32 @@ function build_post(post) {
     post_card.append(comments)
 
     document.querySelector("#posts").append(post_card)
+}
+
+function update_like(post_id) {
+    fetch(`post/${post_id}/update_like`)
+    .then(response => response.json())
+    .then(response => {
+        if (response.newLike) {
+            document.getElementById(`post-likes-${post_id}`).innerHTML = `Unlike ${response.newAmount}`
+        } else {
+            document.getElementById(`post-likes-${post_id}`).innerHTML = `Like ${response.newAmount}`
+        }
+    })
+}
+
+function show_profile(author_id) {
+    load_posts(`?profile=${author_id}`)
+    document.querySelector('#newPost').style.display = "none"
+    document.querySelector('#profile').style.display = "block"
+    fetch(`profile/${author_id}`)
+    .then(response => response.json())
+    .then(response => {
+        document.querySelector('#profile_username').innerHTML = response.profile_username
+        document.querySelector('#profile_rating').innerHTML = response.profile_rating
+
+        console.log(response)
+    })
 }
 
 function build_comment(comment, post_id) {
@@ -98,16 +146,17 @@ function load_comments(post_id) {
 
     const hide_button = document.createElement('button')
     hide_button.innerHTML = "Hide"
+    hide_button.className = "btn btn-primary"
     hide_button.id = `post-comment-hide-button-${post_id}`
     post_body.append(hide_button)
 
     hide_button.addEventListener('click', () => {
-        document.getElementById(`post-comments-${post_id}`).style.display = "none" // Hiding all comments
-        document.getElementById(`post-comment-hide-button-${post_id}`).remove() // Hiding hide button itself
-        document.getElementById(`post-comment-save-button-${post_id}`).remove() // Hiding save button
-        document.getElementById(`post-comment-input-${post_id}`).remove() // Hiding comment input
-        document.getElementById(`post-comments-amount-${post_id}`).style.display = "none" // Hiding comment amount indicator
-        document.getElementById(`post-view-comments-${post_id}`).style.display = "block" // Unhiding view comments button
+        document.getElementById(`post-comments-${post_id}`).style.display = "none" 
+        document.getElementById(`post-comments-amount-${post_id}`).style.display = "none" 
+        document.getElementById(`post-view-comments-${post_id}`).style.display = "block"
+        document.getElementById(`post-comment-hide-button-${post_id}`).remove() 
+        document.getElementById(`post-comment-save-button-${post_id}`).remove() 
+        document.getElementById(`post-comment-input-${post_id}`).remove() 
     })
 
     const save_button = document.createElement('button')

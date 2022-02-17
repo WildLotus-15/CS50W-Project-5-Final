@@ -4,20 +4,25 @@
 {% block title %}{% endblock %}
 
 {% block body %}
-    {% if request.user.is_authenticated %}
-        <h1>Hello, {{ request.user }}</h1>
-        <a href="{% url 'logout' %}">Log Out</a>
-        <div id="newPost">
-            <h5>New Post</h5>
-            <form>
-                <input type="text" id="description" class="form-control">
-                <input type="submit" class="btn btn-primary">
-            </form>    
+    <div id="newPost">
+        <h5>New Post</h5>
+        <form>
+            <input type="text" id="description" class="form-control">
+            <input type="submit" class="btn btn-primary">
+        </form>
+    </div>
+
+    <div id="profile">
+        <div style="display: flex;">
+            <div style="flex: 1">
+                <span id="profile_username"></span>
+            </div>
+            <div style="flex: 1;">
+                <span id="profile_rating"></span>
+                <span>rating</span>
+            </div>
         </div>
-    {% else %}
-        <a href="{% url 'login' %}">Log In</a>
-        <a href="{% url 'register' %}">Register</a>
-    {% endif %}
+    </div>
 
     <div id="posts">
 
@@ -25,5 +30,5 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'chess/index.js' %}"></script>
+<script src="{% static 'chess/index.js' %}"></script>
 {% endblock %}

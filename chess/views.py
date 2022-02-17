@@ -14,10 +14,30 @@ def index(request):
 
 
 def load_posts(request):
-    posts = Post.objects.order_by('-timestamp')
+    profile = request.GET.get("profile")
+    if (profile):
+        posts = Post.objects.filter(author=profile)
+    else:
+        posts = Post.objects.order_by('-timestamp')
     return JsonResponse({
-        "posts": [post.serialize() for post in posts]
+        "posts": [post.serialize(request.user) for post in posts]
     }, safe=False)
+
+
+def update_like(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    if request.user.profile in post.likes.all():
+        post.likes.remove(request.user.profile)
+        newStatus = False
+    else:
+        post.likes.add(request.user.profile)
+        newStatus = True
+    return JsonResponse({"newLike": newStatus, "newAmount": post.likes.count()}, status=200)
+
+
+def show_profile(request, profile_id):
+    profile = UserProfile.objects.get(pk=profile_id)
+    return JsonResponse(profile.serialize(), safe=False)
 
 
 def add_comment(request, post_id):
@@ -35,7 +55,7 @@ def comments(request, post_id):
     post = Post.objects.get(pk=post_id)
     comments = Comment.objects.filter(post=post)
     return JsonResponse({
-        "post": post.serialize(),
+        "post": post.serialize(request.user),
         "comments": [comment.serialize() for comment in comments],
         "comments_amount": comments.count(),
     }, safe=False)

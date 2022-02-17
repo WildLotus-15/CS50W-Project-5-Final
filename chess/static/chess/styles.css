@@ -1,3 +1,4 @@
-.card {
-    margin: 10px
+#post-author:hover {
+    cursor: pointer;
+    text-decoration: underline;
 }

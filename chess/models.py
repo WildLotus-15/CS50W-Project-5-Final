@@ -10,28 +10,32 @@ class User(AbstractUser):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, primary_key=True, related_name="profile", on_delete=models.CASCADE)
-    points = models.IntegerField(null=True)
+    rating = models.IntegerField(null=True)
 
     def serialize(self):
         return {
             "profile_id": self.user.id,
             "profile_username": self.user.username,
-            "points": self.points
+            "profile_rating": self.rating
         }
 
 class Post(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     image = models.ImageField(null=True)
+    likes = models.ManyToManyField(UserProfile, blank=True, related_name="likes")
     description = models.CharField(max_length=64)
     timestamp = models.DateTimeField(default=timezone.now)
 
-    def serialize(self):
+    def serialize(self, user):
         return {
             "id": self.id,
             "author_username": self.author.user.username,
+            "author_id": self.author.user.id,
             "description": self.description,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
-            "comments": Comment.objects.filter(post=self).count()
+            "comments": Comment.objects.filter(post=self).count(),
+            "likes": self.likes.count(),
+            "liked": not user.is_anonymous and self in UserProfile.objects.get(user=user).likes.all()
         }
         
 class Comment(models.Model):
