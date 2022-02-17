@@ -1,4 +1,4 @@
-from sqlite3 import Timestamp
+from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.dispatch import receiver
@@ -23,22 +23,22 @@ class Post(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     image = models.ImageField(null=True)
     description = models.CharField(max_length=64)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     def serialize(self):
         return {
             "id": self.id,
             "author_username": self.author.user.username,
             "description": self.description,
-            "image": self.image,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
+            "comments": Comment.objects.filter(post=self).count()
         }
         
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     comment = models.CharField(max_length=64)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     def serialize(self):
         return {

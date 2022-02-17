@@ -1,5 +1,5 @@
 import json
-from telnetlib import STATUS
+from django.utils import timezone
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -28,7 +28,7 @@ def add_comment(request, post_id):
         post = Post.objects.get(pk=post_id)
         newComment = Comment(author=request.user.profile, comment=comment, post=post)
         newComment.save()
-        return JsonResponse({"success": True}, status=200)
+        return JsonResponse({"success": True, "author": request.user.username, "timestamp": newComment.timestamp.strftime("%b %d %Y, %I:%M %p"), "newAmount": Comment.objects.filter(post=post).count()}, status=200)
 
 
 def comments(request, post_id):
@@ -36,7 +36,8 @@ def comments(request, post_id):
     comments = Comment.objects.filter(post=post)
     return JsonResponse({
         "post": post.serialize(),
-        "comments": [comment.serialize() for comment in comments]
+        "comments": [comment.serialize() for comment in comments],
+        "comments_amount": comments.count(),
     }, safe=False)
 
 

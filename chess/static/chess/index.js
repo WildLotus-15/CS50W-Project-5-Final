@@ -17,15 +17,6 @@ function build_post(post) {
     const post_card = document.createElement('div')
     post_card.className = "card"
 
-    /*
-
-    const img = document.createElement('img')
-    img.className = "card-img-top"
-    img.alt = "Card img cap"
-    post_card.append(img)
-
-    */
-
     const author = document.createElement('div')
     author.className = "card-title"
     author.innerHTML = post.author_username
@@ -41,10 +32,13 @@ function build_post(post) {
     timestamp.innerHTML = post.timestamp
     post_card.append(timestamp)
 
+    const comment_amount = document.createElement('div')
+    comment_amount.innerHTML = post.comments
+
     const view_comments = document.createElement('a')
     view_comments.id = `post-view-comments-${post.id}`
     view_comments.href = "#"
-    view_comments.innerHTML = "Comments"
+    view_comments.innerHTML = `Comments ${post.comments}`
     post_card.append(view_comments)
 
     view_comments.addEventListener('click', () => load_comments(post.id))
@@ -57,8 +51,6 @@ function build_post(post) {
 }
 
 function build_comment(comment, post_id) {
-    document.getElementById(`post-comments-${post_id}`).style.display = "unset"
-
     const comment_card = document.createElement('div')
     comment_card.id = `post-comment-card-${post_id}`
 
@@ -71,6 +63,7 @@ function build_comment(comment, post_id) {
     comment_card.append(comment_content)
 
     const comment_timestamp = document.createElement('div')
+    comment_timestamp.className = "text-muted" 
     comment_timestamp.innerHTML = comment.timestamp
     comment_card.append(comment_timestamp)
 
@@ -83,6 +76,7 @@ function load_comments(post_id) {
     .then(response => response.json())
     .then(response => {
         response.comments.forEach(comment => build_comment(comment, post_id))
+        document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.comments_amount}`
     })
 
     const view_comments = document.getElementById(`post-view-comments-${post_id}`)
@@ -90,19 +84,9 @@ function load_comments(post_id) {
 
     const post_body = view_comments.parentNode
 
-    const hide_comments = document.createElement('a')
-    hide_comments.id = `post-comment-hide-${post_id}`
-    hide_comments.href = "#"
-    hide_comments.innerHTML = "Hide"
-    post_body.append(hide_comments)
-
-    hide_comments.addEventListener('click', () => {
-        fetch(`post/${post_id}/comments`)
-        .then(response => response.json())
-        .then(response => {
-            response.comments.forEach(comment => hide_comment(post_id, comment))
-        })    
-    })
+    const comments_amount = document.createElement('div')
+    comments_amount.id = `post-comments-amount-${post_id}`
+    post_body.append(comments_amount)
 
     const comment_input = document.createElement('input')
     comment_input.className = "form-control"
@@ -133,27 +117,15 @@ function load_comments(post_id) {
             if (response.success) {
                 const comments = document.getElementById(`post-comments-${post_id}`)
                 comments.append(comment)
+                comments.append(response.author)
+                comments.append(response.timestamp)
+                document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
             } else {
                 alert("You cant comment!")
             }
-            save_button.remove()
-            comment_input.remove()
-            view_comments.style.display = "unset"
         })
     })
 }
-
-function hide_comment(post_id) {
-    document.getElementById(`post-comment-save-button-${post_id}`).style.display = "none"
-    document.getElementById(`post-comment-input-${post_id}`).style.display = "none"
-
-    document.getElementById(`post-comments-${post_id}`).style.display = "none"
-
-    document.getElementById(`post-comment-hide-${post_id}`).style.display = "none"
-
-    document.getElementById(`post-view-comments-${post_id}`).style.display = "block"
-}
-
 
 function create_post() {
     const description = document.getElementById("description").value
@@ -170,6 +142,7 @@ function create_post() {
     .then(response => response.json())
     .then(response => {
         console.log(response.message)
+        window.location.reload()
     })
 }
 
