@@ -32,6 +32,10 @@ function build_post(post) {
 
     author.addEventListener('click', () => show_profile(post.author_id))
 
+    const image = document.createElement('img')
+    image.src = post.image
+    post_card.append(image)
+
     const description = document.createElement('div')
     description.className = "card-text"
     description.innerHTML = post.description
