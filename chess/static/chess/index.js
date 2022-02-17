@@ -79,22 +79,40 @@ function load_comments(post_id) {
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.comments_amount}`
     })
 
+    document.getElementById(`post-comments-${post_id}`).style.display = "block"
+
     const view_comments = document.getElementById(`post-view-comments-${post_id}`)
     view_comments.style.display = "none"
 
     const post_body = view_comments.parentNode
 
     const comments_amount = document.createElement('div')
+    comments_amount.style.display = "block"
     comments_amount.id = `post-comments-amount-${post_id}`
     post_body.append(comments_amount)
 
     const comment_input = document.createElement('input')
     comment_input.className = "form-control"
+    comment_input.style.display = "block"
     comment_input.id = `post-comment-input-${post_id}`
     post_body.append(comment_input)
 
+    const hide_button = document.createElement('button')
+    hide_button.innerHTML = "Hide"
+    hide_button.id = `post-comment-hide-button-${post_id}`
+    post_body.append(hide_button)
+
+    hide_button.addEventListener('click', () => {
+        document.getElementById(`post-comments-${post_id}`).style.display = "none" // Hiding all comments
+        document.getElementById(`post-comment-hide-button-${post_id}`).style.display = "none" // Hiding hide button itself
+        document.getElementById(`post-comment-save-button-${post_id}`).style.display = "none" // Hiding save button
+        document.getElementById(`post-comment-input-${post_id}`).style.display = "none" // Hiding comment input
+        document.getElementById(`post-comments-amount-${post_id}`).style.display = "none" // Hiding comment amount indicator
+        document.getElementById(`post-view-comments-${post_id}`).style.display = "block" // Unhiding view comments button
+    })
+
     const save_button = document.createElement('button')
-    save_button.innerHTML = "Save"
+    save_button.innerHTML = "Add"
     save_button.className = "btn btn-primary"
     save_button.id = `post-comment-save-button-${post_id}`
     post_body.append(save_button)
