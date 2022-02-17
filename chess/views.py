@@ -63,9 +63,9 @@ def comments(request, post_id):
 
 def create_post(request):
     if request.method == "POST":
-        data = json.loads(request.body)
-        description = data.get("description")
-        post = Post(author=request.user.profile, description=description)
+        image = request.FILES.get("image")
+        description = request.POST.get("description")
+        post = Post(author=request.user.profile, image=image, description=description)
         post.save()
         return JsonResponse({"message": "Post was created successfully."}, status=200)
 

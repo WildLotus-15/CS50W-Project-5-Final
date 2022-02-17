@@ -194,16 +194,21 @@ function load_comments(post_id) {
 }
 
 function create_post() {
+    const formData = new FormData()
+
+    const image = document.getElementById('image')
     const description = document.getElementById("description").value
+
+    formData.append('image', image.files[0])
+    formData.append('description', description)
+    
 
     fetch('create_post', {
         method: "POST",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
         },
-        body: JSON.stringify({
-            "description": description
-        })
+        body: formData
     })
     .then(response => response.json())
     .then(response => {
