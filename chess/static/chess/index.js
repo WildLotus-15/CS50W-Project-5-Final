@@ -87,7 +87,7 @@ function build_post(post) {
     view_comments.innerHTML = `Comments ${post.comments}`
     post_body.append(view_comments)
 
-    view_comments.addEventListener('click', () => load_comments(post.id))
+    view_comments.addEventListener('click', () => load_comments(post.id, comments))
 
     const comments = document.createElement('div')
     comments.id = `post-comments-${post.id}`
@@ -160,7 +160,7 @@ function build_comment(comment, post_id) {
     likes_logo.id = `comment-likes-logo-${comment.id}`
     likes_row.append(likes_logo)
 
-    likes_logo.addEventListener('click', () => update_comment_like(comment.id))
+    likes_logo.addEventListener('click', () => update_comment_like(comment.id, post_id))
 
     const likes_amount = document.createElement('div')
     likes_amount.id = `comment-likes-amount-${comment.id}`
@@ -176,22 +176,35 @@ function build_comment(comment, post_id) {
     comments.append(comment_card)
 }
 
-function update_comment_like(comment_id) {
+function update_comment_like(comment_id, comments, post_id, like_amount) {
     fetch(`comment/${comment_id}/update_like`)
     .then(response => response.json())
     .then(response => {
         if (response.newLike) {
-            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart-fill.svg"
+            if (document.getElementById(`comment-likes-logo-${comment_id}`)) {
+                document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart-fill.svg"
+            } else {
+                const like_icon = document.getElementById(`post-comments-created-like-logo-${comment_id}`)
+                like_icon.src = "static/chess/heart-fill.svg"
+            }
         } else {
-            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart.svg"            
+            if (document.getElementById(`comment-likes-logo-${comment_id}`)) {
+                document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart.svg"            
+            } else {
+                const like_icon = document.getElementById(`post-comments-created-like-logo-${comment_id}`)
+                like_icon.src = "static/chess/heart.svg"
+            }
         }
 
         if (response.newAmount == 0) {
-            document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "none"            
+            if (document.getElementById(`comment-likes-amount-${comment_id}`)) {
+                document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "none"
+            } else {
+                like_amount.style.display = "none"
+            }
         } else {
             document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "inline"
         }
-        document.getElementById(`comment-likes-amount-${comment_id}`).innerHTML = response.newAmount
     })
 }
 
@@ -243,6 +256,7 @@ function load_comments(post_id) {
 
     save_button.addEventListener("click", () => {
         const comment = document.getElementById(`post-comment-input-${post_id}`).value
+        document.getElementById(`post-comment-input-${post_id}`).value = ''
 
         fetch(`post/${post_id}/comment`, {
             method: "POST",
@@ -284,6 +298,7 @@ function create_post() {
     })
     .then(response => response.json())
     .then(response => {
+        document.getElementById("description").value = ""
         console.log(response.message)
         window.location.reload()
     })
