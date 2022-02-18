@@ -5,12 +5,16 @@
 
 {% block body %}
     <div id="newPost">
-        <h5>New Post</h5>
-        <form>
-            <input type="file" id="image" accept="image/png, image/jpg">
-            <input type="text" id="description" class="form-control">
-            <input type="submit" class="btn btn-primary">
-        </form>
+        <div class="card">
+            <div class="card-body">
+                <h5 clas="card-title">New Post</h5>
+                <form>
+                    <input type="file" id="image" accept="image/png, image/jpg">
+                    <input type="text" id="description" class="form-control">
+                    <input type="submit" class="btn btn-primary">
+                </form>    
+            </div>    
+        </div>
     </div>
 
     <div id="profile">
