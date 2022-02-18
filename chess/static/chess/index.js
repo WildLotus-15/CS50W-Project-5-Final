@@ -23,6 +23,7 @@ function load_posts(addon) {
 function build_post(post) {
     const post_card = document.createElement('div')
     post_card.className = "card"
+    post_card.style.width = "18rem"
 
     const author = document.createElement('div')
     author.className = "card-title"
@@ -33,6 +34,8 @@ function build_post(post) {
     author.addEventListener('click', () => show_profile(post.author_id))
 
     const image = document.createElement('img')
+    image.className = 'card-img-top'
+    image.id = "post-image"
     image.src = post.image
     post_card.append(image)
 
@@ -46,17 +49,26 @@ function build_post(post) {
     timestamp.innerHTML = post.timestamp
     post_card.append(timestamp)
 
-    const likes = document.createElement('button')
-    if (post.liked) {
-        likes.innerHTML = `Unlike ${post.likes}`
-    } else {
-        likes.innerHTML = `Like ${post.likes}`
-    }
-    likes.className = "btn btn-primary"
-    likes.id = `post-likes-${post.id}`
-    post_card.append(likes)
+    const likes_row = document.createElement('div')
+    likes_row.style.marginLeft = "50px"
+    likes_row.className = "row"
+    post_card.append(likes_row)
 
-    likes.addEventListener('click', () => update_like(post.id, post.likes))
+    const likes_logo = document.createElement('img')
+    if (post.liked) {
+        likes_logo.src = "static/chess/heart-fill.svg"
+    } else {
+        likes_logo.src = "static/chess/heart.svg"
+    }
+    likes_logo.id = `post-likes-logo-${post.id}`
+    likes_row.append(likes_logo)
+
+    likes_logo.addEventListener('click', () => update_like(post.id, post.likes))
+    
+    const likes_amount = document.createElement('p')
+    likes_amount.id = `post-likes-amount-${post.id}`
+    likes_amount.innerHTML = post.likes
+    likes_row.append(likes_amount)
 
     const comment_amount = document.createElement('div')
     comment_amount.innerHTML = post.comments
@@ -81,10 +93,12 @@ function update_like(post_id) {
     .then(response => response.json())
     .then(response => {
         if (response.newLike) {
-            document.getElementById(`post-likes-${post_id}`).innerHTML = `Unlike ${response.newAmount}`
-        } else {
-            document.getElementById(`post-likes-${post_id}`).innerHTML = `Like ${response.newAmount}`
+            document.getElementById(`post-likes-logo-${post_id}`).src = `static/chess/heart-fill.svg`
+            } else {
+            document.getElementById(`post-likes-logo-${post_id}`).src = 'static/chess/heart.svg'
         }
+
+        document.getElementById(`post-likes-amount-${post_id}`).innerHTML = response.newAmount
     })
 }
 
@@ -119,8 +133,43 @@ function build_comment(comment, post_id) {
     comment_timestamp.innerHTML = comment.timestamp
     comment_card.append(comment_timestamp)
 
+    const likes_row = document.createElement('div')
+    likes_row.className = 'row'
+    likes_row.style.marginLeft = "50px"
+    comment_card.append(likes_row)
+
+    const likes_logo = document.createElement('img')
+    if (comment.liked) {
+        likes_logo.src = "static/chess/heart-fill.svg" 
+    } else {
+        likes_logo.src = "static/chess/heart.svg"
+    }
+    likes_logo.id = `comment-likes-logo-${comment.id}`
+    likes_row.append(likes_logo)
+
+    likes_logo.addEventListener('click', () => update_comment_like(comment.id))
+
+    const likes_amount = document.createElement('p')
+    likes_amount.id = `comment-likes-amount-${comment.id}`
+    likes_amount.innerHTML = comment.likes
+    likes_row.append(likes_amount)
+
     const comments = document.getElementById(`post-comments-${post_id}`)
     comments.append(comment_card)
+}
+
+function update_comment_like(comment_id) {
+    fetch(`comment/${comment_id}/update_like`)
+    .then(response => response.json())
+    .then(response => {
+        if (response.newLike) {
+            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart-fill.svg"
+        } else {
+            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart.svg"            
+        }
+
+        document.getElementById(`comment-likes-amount-${comment_id}`).innerHTML = response.newAmount
+    })
 }
 
 function load_comments(post_id) {

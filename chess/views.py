@@ -35,6 +35,17 @@ def update_like(request, post_id):
     return JsonResponse({"newLike": newStatus, "newAmount": post.likes.count()}, status=200)
 
 
+def update_comment_like(request, comment_id):
+    comment = Comment.objects.get(pk=comment_id)
+    if request.user.profile in comment.likes.all():
+        comment.likes.remove(request.user.profile)
+        newStatus = False
+    else:
+        comment.likes.add(request.user.profile)        
+        newStatus = True
+    return JsonResponse({"newLike": newStatus, "newAmount": comment.likes.count()}, status=200)
+
+
 def show_profile(request, profile_id):
     profile = UserProfile.objects.get(pk=profile_id)
     return JsonResponse(profile.serialize(), safe=False)
@@ -56,7 +67,7 @@ def comments(request, post_id):
     comments = Comment.objects.filter(post=post)
     return JsonResponse({
         "post": post.serialize(request.user),
-        "comments": [comment.serialize() for comment in comments],
+        "comments": [comment.serialize(request.user) for comment in comments],
         "comments_amount": comments.count(),
     }, safe=False)
 
@@ -65,7 +76,10 @@ def create_post(request):
     if request.method == "POST":
         image = request.FILES.get("image")
         description = request.POST.get("description")
-        post = Post(author=request.user.profile, image=image, description=description)
+        if (image):    
+            post = Post(author=request.user.profile, image=image, description=description)
+        else:
+            post = Post(author=request.user.profile, description=description)            
         post.save()
         return JsonResponse({"message": "Post was created successfully."}, status=200)
 

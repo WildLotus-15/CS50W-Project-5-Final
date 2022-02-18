@@ -23,10 +23,10 @@ class UserProfile(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    image = models.ImageField(null=True)
-    likes = models.ManyToManyField(UserProfile, blank=True, related_name="likes")
+    image = models.ImageField(null=True, blank=True)
     description = models.CharField(max_length=64)
     timestamp = models.DateTimeField(default=timezone.now)
+    likes = models.ManyToManyField(UserProfile, blank=True, related_name="likes")
 
     def serialize(self, user):
         return {
@@ -46,12 +46,16 @@ class Comment(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     comment = models.CharField(max_length=64)
     timestamp = models.DateTimeField(default=timezone.now)
+    likes = models.ManyToManyField(UserProfile, blank=True, related_name="comment_likes")
 
-    def serialize(self):
+    def serialize(self, user):
         return {
+            "id": self.id,
             "author_username": self.author.user.username,
             "comment": self.comment,
-            "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p")
+            "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
+            "likes": self.likes.count(),
+            "liked": not user.is_anonymous and self in UserProfile.objects.get(user=user).likes.all()
         }
 
 @receiver(post_save, sender=User)
