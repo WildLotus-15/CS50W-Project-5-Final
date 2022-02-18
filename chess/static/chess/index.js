@@ -25,34 +25,36 @@ function build_post(post) {
     post_card.className = "card"
     post_card.style.width = "18rem"
 
-    const author = document.createElement('div')
-    author.className = "card-title"
-    author.id = "post-author"
-    author.innerHTML = post.author_username
-    post_card.append(author)
-
-    author.addEventListener('click', () => show_profile(post.author_id))
-
     const image = document.createElement('img')
     image.className = 'card-img-top'
     image.id = "post-image"
     image.src = post.image
     post_card.append(image)
 
+    const post_body = document.createElement('div')
+    post_body.className = "card-body"
+    post_card.append(post_body)
+
+    const author = document.createElement('div')
+    author.className = "card-title"
+    author.id = "post-author"
+    author.innerHTML = post.author_username
+    post_body.append(author)
+
+    author.addEventListener('click', () => show_profile(post.author_id))
+
     const description = document.createElement('div')
     description.className = "card-text"
     description.innerHTML = post.description
-    post_card.append(description)
+    post_body.append(description)
 
     const timestamp = document.createElement('div')
     timestamp.className = "text-muted"
     timestamp.innerHTML = post.timestamp
-    post_card.append(timestamp)
+    post_body.append(timestamp)
 
     const likes_row = document.createElement('div')
-    likes_row.style.marginLeft = "50px"
-    likes_row.className = "row"
-    post_card.append(likes_row)
+    post_body.append(likes_row)
 
     const likes_logo = document.createElement('img')
     if (post.liked) {
@@ -65,14 +67,15 @@ function build_post(post) {
 
     likes_logo.addEventListener('click', () => update_like(post.id, post.likes))
     
-    const likes_amount = document.createElement('p')
+    const likes_amount = document.createElement('div')
+    likes_amount.className = "post-likes-amount"
     likes_amount.id = `post-likes-amount-${post.id}`
+    likes_amount.innerHTML = post.likes
     if (post.likes == 0) {
         likes_amount.style.display = "none"
     } else {
-        likes_amount.style.display = "block"        
+        likes_amount.style.display = "inline"
     }
-    likes_amount.innerHTML = post.likes
     likes_row.append(likes_amount)
 
     const comment_amount = document.createElement('div')
@@ -82,14 +85,15 @@ function build_post(post) {
     view_comments.id = `post-view-comments-${post.id}`
     view_comments.href = "#"
     view_comments.innerHTML = `Comments ${post.comments}`
-    post_card.append(view_comments)
+    post_body.append(view_comments)
 
     view_comments.addEventListener('click', () => load_comments(post.id))
 
     const comments = document.createElement('div')
     comments.id = `post-comments-${post.id}`
-    post_card.append(comments)
+    post_body.append(comments)
 
+    post_card.append(post_body)
     document.querySelector("#posts").append(post_card)
 }
 
@@ -106,7 +110,7 @@ function update_like(post_id) {
         if (response.newAmount == 0) {
             document.getElementById(`post-likes-amount-${post_id}`).style.display = "none"            
         } else {
-            document.getElementById(`post-likes-amount-${post_id}`).style.display = "block"
+            document.getElementById(`post-likes-amount-${post_id}`).style.display = "inline"
         }
 
         document.getElementById(`post-likes-amount-${post_id}`).innerHTML = response.newAmount
@@ -145,8 +149,6 @@ function build_comment(comment, post_id) {
     comment_card.append(comment_timestamp)
 
     const likes_row = document.createElement('div')
-    likes_row.className = 'row'
-    likes_row.style.marginLeft = "50px"
     comment_card.append(likes_row)
 
     const likes_logo = document.createElement('img')
@@ -160,13 +162,13 @@ function build_comment(comment, post_id) {
 
     likes_logo.addEventListener('click', () => update_comment_like(comment.id))
 
-    const likes_amount = document.createElement('p')
+    const likes_amount = document.createElement('div')
     likes_amount.id = `comment-likes-amount-${comment.id}`
     likes_amount.innerHTML = comment.likes
     if (comment.likes == 0) {
         likes_amount.style.display = "none"
     } else {
-        likes_amount.style.display = "block"
+        likes_amount.style.display = "inline"
     }
     likes_row.append(likes_amount)
 
@@ -187,7 +189,7 @@ function update_comment_like(comment_id) {
         if (response.newAmount == 0) {
             document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "none"            
         } else {
-            document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "unset"
+            document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "inline"
         }
         document.getElementById(`comment-likes-amount-${comment_id}`).innerHTML = response.newAmount
     })
@@ -255,17 +257,7 @@ function load_comments(post_id) {
         .then(response => response.json())
         .then(response => {
             if (response.success) {
-                const comments = document.getElementById(`post-comments-${post_id}`)
-                const like_logo = document.createElement('img')
-                like_logo.src = "static/chess/heart.svg"
-
-                like_logo.addEventListener('click', () => update_comment_like(response.comment_id))
-
-                comments.append(comment)
-                comments.append(like_logo)
-                comments.append(response.author)
-                comments.append(response.timestamp)
-                document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
+                window.location.reload()
             } else {
                 alert("You cant comment!")
             }
