@@ -67,6 +67,11 @@ function build_post(post) {
     
     const likes_amount = document.createElement('p')
     likes_amount.id = `post-likes-amount-${post.id}`
+    if (post.likes == 0) {
+        likes_amount.style.display = "none"
+    } else {
+        likes_amount.style.display = "block"        
+    }
     likes_amount.innerHTML = post.likes
     likes_row.append(likes_amount)
 
@@ -96,6 +101,12 @@ function update_like(post_id) {
             document.getElementById(`post-likes-logo-${post_id}`).src = `static/chess/heart-fill.svg`
             } else {
             document.getElementById(`post-likes-logo-${post_id}`).src = 'static/chess/heart.svg'
+        }
+
+        if (response.newAmount == 0) {
+            document.getElementById(`post-likes-amount-${post_id}`).style.display = "none"            
+        } else {
+            document.getElementById(`post-likes-amount-${post_id}`).style.display = "block"
         }
 
         document.getElementById(`post-likes-amount-${post_id}`).innerHTML = response.newAmount
@@ -152,6 +163,11 @@ function build_comment(comment, post_id) {
     const likes_amount = document.createElement('p')
     likes_amount.id = `comment-likes-amount-${comment.id}`
     likes_amount.innerHTML = comment.likes
+    if (comment.likes == 0) {
+        likes_amount.style.display = "none"
+    } else {
+        likes_amount.style.display = "block"
+    }
     likes_row.append(likes_amount)
 
     const comments = document.getElementById(`post-comments-${post_id}`)
@@ -168,6 +184,11 @@ function update_comment_like(comment_id) {
             document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart.svg"            
         }
 
+        if (response.newAmount == 0) {
+            document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "none"            
+        } else {
+            document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "unset"
+        }
         document.getElementById(`comment-likes-amount-${comment_id}`).innerHTML = response.newAmount
     })
 }
@@ -235,7 +256,13 @@ function load_comments(post_id) {
         .then(response => {
             if (response.success) {
                 const comments = document.getElementById(`post-comments-${post_id}`)
+                const like_logo = document.createElement('img')
+                like_logo.src = "static/chess/heart.svg"
+
+                like_logo.addEventListener('click', () => update_comment_like(response.comment_id))
+
                 comments.append(comment)
+                comments.append(like_logo)
                 comments.append(response.author)
                 comments.append(response.timestamp)
                 document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`

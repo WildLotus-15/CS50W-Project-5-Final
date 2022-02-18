@@ -59,7 +59,7 @@ def add_comment(request, post_id):
         post = Post.objects.get(pk=post_id)
         newComment = Comment(author=request.user.profile, comment=comment, post=post)
         newComment.save()
-        return JsonResponse({"success": True, "author": request.user.username, "timestamp": newComment.timestamp.strftime("%b %d %Y, %I:%M %p"), "newAmount": Comment.objects.filter(post=post).count()}, status=200)
+        return JsonResponse({"success": True, "author": request.user.username, "timestamp": newComment.timestamp.strftime("%b %d %Y, %I:%M %p"), "newAmount": Comment.objects.filter(post=post).count(), "comment_id": newComment.id}, status=200)
 
 
 def comments(request, post_id):
