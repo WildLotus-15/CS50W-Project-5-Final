@@ -184,14 +184,14 @@ function update_comment_like(comment_id, comments, post_id, like_amount) {
             if (document.getElementById(`comment-likes-logo-${comment_id}`)) {
                 document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart-fill.svg"
             } else {
-                const like_icon = document.getElementById(`post-comments-created-like-logo-${post_id}`)
+                const like_icon = document.getElementById(`post-comments-created-like-logo-${comment_id}`)
                 like_icon.src = "static/chess/heart-fill.svg"
             }
         } else {
             if (document.getElementById(`comment-likes-logo-${comment_id}`)) {
                 document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart.svg"            
             } else {
-                const like_icon = document.getElementById(`post-comments-created-like-logo-${post_id}`)
+                const like_icon = document.getElementById(`post-comments-created-like-logo-${comment_id}`)
                 like_icon.src = "static/chess/heart.svg"
             }
         }
@@ -201,7 +201,6 @@ function update_comment_like(comment_id, comments, post_id, like_amount) {
                 document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "none"
             } else {
                 like_amount.style.display = "none"
-                comments.append(like_amount) 
             }
         } else {
             if (document.getElementById(`comment-likes-amount-${comment_id}`)) {
@@ -209,14 +208,13 @@ function update_comment_like(comment_id, comments, post_id, like_amount) {
             } else {
                 like_amount.style.display = "unset"
                 like_amount.innerHTML = response.newAmount
-                comments.append(like_amount) 
             }
         }
 
         if (document.getElementById(`comment-likes-amount-${comment_id}`)) {
             document.getElementById(`comment-likes-amount-${comment_id}`).innerHTML = response.newAmount
         } else {
-            console.log('miau')
+            like_amount.innerHTML = response.newAmount
         }
     })
 }
@@ -286,19 +284,29 @@ function load_comments(post_id) {
             if (response.success) {
                 const comments = document.getElementById(`post-comments-${post_id}`)
                 const like_logo = document.createElement('img')
-                like_logo.id = `post-comments-created-like-logo-${post_id}`
+                like_logo.id = `post-comments-created-like-logo-${response.comment_id}`
                 like_logo.src = "static/chess/heart.svg"
 
                 const like_amount = document.createElement('div')
-                like_amount.id = `post-comments-created-amount-${post_id}`
+                like_amount.id = `post-comments-created-amount-${response.comment_id}`
+                like_amount.style.display = 'none'
 
-                like_logo.addEventListener('click', () => update_comment_like(response.comment_id, comments, post_id, like_amount))
+                like_logo.addEventListener('click', () => update_comment_like(response.comment_id, post_id, comments, like_amount))
 
-                comments.append(comment)
+                const comment_author = document.createElement('div')
+                comment_author.innerHTML = response.author
+
+                const comment_content = document.createElement('div')
+                comment_content.innerHTML = comment
+
+                const comment_timestamp = document.createElement('div')
+                comment_timestamp.innerHTML = response.timestamp
+
+                comments.append(comment_author)
+                comments.append(comment_content)
+                comments.append(comment_timestamp)
                 comments.append(like_logo)
                 comments.append(like_amount)
-                comments.append(response.author)
-                comments.append(response.timestamp)
                 document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
             } else {
                 alert("You cant comment!")
