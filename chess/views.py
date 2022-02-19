@@ -82,6 +82,14 @@ def create_post(request):
             post = Post(author=request.user.profile, description=description)            
         post.save()
         return JsonResponse({"message": "Post was created successfully."}, status=200)
+    elif request.method == "PUT":
+        data = json.loads(request.body)
+        post_id = data.get("post_id")
+        new_description = data.get("new_description")
+        post = Post.objects.get(pk=post_id)
+        post.description = new_description
+        post.save()
+        return JsonResponse({"message": "Post was updated successfully."})
 
 
 def profile(request, profile_id):

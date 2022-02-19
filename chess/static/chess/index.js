@@ -31,15 +31,26 @@ function build_post(post) {
     image.src = post.image
     post_card.append(image)
 
-    const image_download = document.createElement('a')
-    image_download.href = post.image
-    image_download.download = post.image
-    image_download.innerHTML = "<img src='static/chess/download.svg'>"
-    post_card.append(image_download)
-
     const post_body = document.createElement('div')
     post_body.className = "card-body"
     post_card.append(post_body)
+
+    const image_download = document.createElement('a')
+    image_download.href = post.image
+    image_download.download = post.image
+    image_download.innerHTML = "Download"
+    image_download.id = `post-image-download-${post.id}`
+    post_body.append(image_download)
+
+    if (post.editable) {
+        const edit_button = document.createElement("button")
+        edit_button.className = "btn btn-primary"
+        edit_button.id = `post-edit-button-${post.id}`
+        edit_button.innerHTML = "Edit"
+        edit_button.addEventListener('click', () => edit_post(post))
+
+        post_body.append(edit_button)
+    }
 
     const author = document.createElement('div')
     author.className = "card-title"
@@ -51,6 +62,7 @@ function build_post(post) {
 
     const description = document.createElement('div')
     description.className = "card-text"
+    description.id = `post-description-${post.id}`
     description.innerHTML = post.description
     post_body.append(description)
 
@@ -60,6 +72,7 @@ function build_post(post) {
     post_body.append(timestamp)
 
     const likes_row = document.createElement('div')
+    likes_row.id = `post-likes-row-${post.id}`
     post_body.append(likes_row)
 
     const likes_logo = document.createElement('img')
@@ -343,6 +356,63 @@ function create_post() {
         document.getElementById("description").value = ""
         console.log(response.message)
         window.location.reload()
+    })
+}
+
+function edit_post(post) {
+    const content = document.getElementById(`post-description-${post.id}`)
+    const comments = document.getElementById(`post-view-comments-${post.id}`)
+    const likes_row = document.getElementById(`post-likes-row-${post.id}`)
+    const download = document.getElementById(`post-image-download-${post.id}`)
+    const edit_button = document.getElementById(`post-edit-button-${post.id}`)
+
+    const post_body = content.parentNode
+
+    const new_description_form = document.createElement('input')
+    new_description_form.id = `new-content-${post.id}`
+    new_description_form.type = "textarea"
+    new_description_form.className = "form-control"
+    new_description_form.value = content.innerHTML
+    post_body.append(new_description_form)
+
+    document.getElementById(`post-description-${post.id}`).remove()
+    document.getElementById(`post-view-comments-${post.id}`).remove()
+    document.getElementById(`post-likes-row-${post.id}`).remove()
+    document.getElementById(`post-image-download-${post.id}`).remove()
+    document.getElementById(`post-edit-button-${post.id}`).remove()
+
+    const save_button = document.createElement('button')
+    save_button.innerHTML = "Save"
+    save_button.className = "btn btn-primary"
+    post_body.append(save_button)
+    
+    save_button.addEventListener("click", () => {
+        const new_description = document.getElementById(`new-content-${post.id}`).value
+
+        fetch('/create_post', {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                "post_id": post.id,
+                "new_description": new_description
+            })
+        })
+        .then(response => response.json())
+        .then(response => {
+            content.innerHTML = new_description
+
+            new_description_form.remove()
+            save_button.remove()
+            post_body.append(content)
+            post_body.append(comments)
+            post_body.append(likes_row)
+            post_body.append(download)
+            post_body.append(edit_button)
+
+            console.log(response.message)
+        })
     })
 }
 
