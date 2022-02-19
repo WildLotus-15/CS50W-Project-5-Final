@@ -31,6 +31,12 @@ function build_post(post) {
     image.src = post.image
     post_card.append(image)
 
+    const image_download = document.createElement('a')
+    image_download.href = post.image
+    image_download.download = post.image
+    image_download.innerHTML = "<img src='static/chess/download.svg'>"
+    post_card.append(image_download)
+
     const post_body = document.createElement('div')
     post_body.className = "card-body"
     post_card.append(post_body)
@@ -68,11 +74,11 @@ function build_post(post) {
 
     likes_logo.addEventListener('click', () => update_like(post.id, post.likes))
     
-    const likes_amount = document.createElement('p')
+    const likes_amount = document.createElement('div')
     if (post.likes == 0) {
         likes_amount.style.display = "none"
     } else {
-        likes_amount.style.display = "block"        
+        likes_amount.style.display = "inline"        
     }
     likes_logo.className = "likes-row-item"
     likes_amount.id = `post-likes-amount-${post.id}`
@@ -110,7 +116,7 @@ function update_like(post_id) {
         if (response.newAmount == 0) {
             document.getElementById(`post-likes-amount-${post_id}`).style.display = "none"            
         } else {
-            document.getElementById(`post-likes-amount-${post_id}`).style.display = "block"
+            document.getElementById(`post-likes-amount-${post_id}`).style.display = "inline"
         }
 
         document.getElementById(`post-likes-amount-${post_id}`).innerHTML = response.newAmount
@@ -168,7 +174,7 @@ function build_comment(comment, post_id) {
     if (comment.likes == 0) {
         likes_amount.style.display = "none"
     } else {
-        likes_amount.style.display = "block"
+        likes_amount.style.display = "inline"
     }
     likes_row.append(likes_amount)
 
@@ -204,9 +210,9 @@ function update_comment_like(comment_id, comments, post_id, like_amount) {
             }
         } else {
             if (document.getElementById(`comment-likes-amount-${comment_id}`)) {
-                document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "unset"
+                document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "inline"
             } else {
-                like_amount.style.display = "unset"
+                like_amount.style.display = "inline"
                 like_amount.innerHTML = response.newAmount
             }
         }

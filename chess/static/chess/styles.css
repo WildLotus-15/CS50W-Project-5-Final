@@ -4,15 +4,10 @@
 }
 
 #post-author {
-    font-weight:bolder;
-    font-size: 20px;
+    font-size: x-large;
 }
 
 body {
     font-family: sans-serif;
     font-size: large;
-}
-
-#likes-row {
-    justify-content: center;
 }
