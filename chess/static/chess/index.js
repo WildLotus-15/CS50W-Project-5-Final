@@ -180,6 +180,16 @@ function build_comment(comment, post_id) {
         comment_edit.addEventListener('click', () => edit_comment(comment, post_id))    
     }
 
+    if (comment.removable) {
+        const comment_remove = document.createElement('button')
+        comment_remove.className = "btn btn-danger"
+        comment_remove.id = `post-comment-remove-${comment.id}`
+        comment_remove.innerHTML = "Remove"
+        comment_card.append(comment_remove)
+
+        comment_remove.addEventListener('click', () => remove_comment(comment, post_id))
+    }
+
     const likes_row = document.createElement('div')
     likes_row.id = `post-comment-likes-row-${comment.id}`
     comment_card.append(likes_row)
@@ -488,6 +498,7 @@ function edit_comment(comment, post_id) {
                 "X-CSRFToken": getCookie("csrftoken")
             },
             body: JSON.stringify({
+                "action": "edit",
                 "comment_id": comment.id,
                 "new_comment": new_content
             })
@@ -523,5 +534,30 @@ function edit_comment(comment, post_id) {
         comment_body.append(timestamp)
         comment_body.append(likes_row)
         comment_body.append(edit_button)
+    })
+}
+
+function remove_comment(comment, post_id) {
+    fetch(`post/${post_id}/comment`, {
+        method: "PUT",
+        headers: {
+            'X-CSRFToken': getCookie("csrftoken")
+        },
+        body: JSON.stringify({
+            "action": "remove",
+            "comment_id": comment.id,
+            "post_id": post_id
+        })
+    })
+    .then(response => response.json())
+    .then(response => {
+        document.getElementById(`post-comment-timestamp-${comment.id}`).remove()
+        document.getElementById(`post-comment-likes-row-${comment.id}`).remove()
+        document.getElementById(`post-comment-author-${comment.id}`).remove()
+        document.getElementById(`comment-content-${comment.id}`).remove()
+        document.getElementById(`post-comment-edit-${comment.id}`).remove()
+        document.getElementById(`post-comment-remove-${comment.id}`).remove()
+
+        document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
     })
 }

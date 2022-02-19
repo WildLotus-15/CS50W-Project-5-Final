@@ -62,12 +62,22 @@ def add_comment(request, post_id):
         return JsonResponse({"success": True, "author": request.user.username, "timestamp": newComment.timestamp.strftime("%b %d %Y, %I:%M %p"), "newAmount": Comment.objects.filter(post=post).count(), "comment_id": newComment.id}, status=200)
     elif request.method == "PUT":
         data = json.loads(request.body)
-        new_comment = data.get("new_comment")
-        comment_id = data.get("comment_id")
-        comment = Comment.objects.get(pk=comment_id)
-        comment.comment = new_comment
-        comment.save()
-        return JsonResponse({"success": True})
+        action = data.get("action")
+
+        if action == "edit":
+            new_comment = data.get("new_comment")
+            comment_id = data.get("comment_id")
+            comment = Comment.objects.get(pk=comment_id)
+            comment.comment = new_comment
+            comment.save()
+            return JsonResponse({"success": True})
+        elif action == "remove":
+            comment_id = data.get("comment_id")
+            post_id = data.get("post_id")
+            post = Post.objects.get(pk=post_id)
+            comment = Comment.objects.get(pk=comment_id)
+            comment.delete()
+            return JsonResponse({"success": True, "newAmount": Comment.objects.filter(post=post).count()})
 
 
 def comments(request, post_id):
