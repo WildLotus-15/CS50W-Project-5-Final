@@ -27,7 +27,7 @@ function build_post(post) {
 
     const image = document.createElement('img')
     image.className = 'card-img-top'
-    image.id = "post-image"
+    image.id = `post-image-${post.id}`
     image.src = post.image
     post_card.append(image)
 
@@ -155,19 +155,33 @@ function build_comment(comment, post_id) {
     comment_card.id = `post-comment-card-${post_id}`
 
     const comment_author = document.createElement('div')
+    comment_author.id = `post-comment-author-${comment.id}`
     comment_author.innerHTML = comment.author_username
     comment_card.append(comment_author)
 
     const comment_content = document.createElement('div')
+    comment_content.id = `comment-content-${comment.id}`
     comment_content.innerHTML = comment.comment
     comment_card.append(comment_content)
 
     const comment_timestamp = document.createElement('div')
+    comment_timestamp.id = `post-comment-timestamp-${comment.id}`
     comment_timestamp.className = "text-muted" 
     comment_timestamp.innerHTML = comment.timestamp
     comment_card.append(comment_timestamp)
 
+    if (comment.editable) {
+        const comment_edit = document.createElement('button')
+        comment_edit.className = "btn btn-primary"
+        comment_edit.id = `post-comment-edit-${comment.id}`
+        comment_edit.innerHTML = "Edit"
+        comment_card.append(comment_edit)
+    
+        comment_edit.addEventListener('click', () => edit_comment(comment, post_id))    
+    }
+
     const likes_row = document.createElement('div')
+    likes_row.id = `post-comment-likes-row-${comment.id}`
     comment_card.append(likes_row)
 
     const likes_logo = document.createElement('img')
@@ -361,6 +375,7 @@ function create_post() {
 
 function edit_post(post) {
     const content = document.getElementById(`post-description-${post.id}`)
+    const image = document.getElementById(`post-image-${post.id}`)
     const comments = document.getElementById(`post-view-comments-${post.id}`)
     const likes_row = document.getElementById(`post-likes-row-${post.id}`)
     const download = document.getElementById(`post-image-download-${post.id}`)
@@ -375,11 +390,19 @@ function edit_post(post) {
     new_description_form.value = content.innerHTML
     post_body.append(new_description_form)
 
+    const new_image_form = document.createElement('input')
+    new_image_form.id = `new_image_${post.id}`
+    new_image_form.type = 'file'
+    new_image_form.accept = "image/png, image/jpg"
+    new_image_form.value = ""
+    post_body.append(new_image_form)
+
     document.getElementById(`post-description-${post.id}`).remove()
     document.getElementById(`post-view-comments-${post.id}`).remove()
     document.getElementById(`post-likes-row-${post.id}`).remove()
     document.getElementById(`post-image-download-${post.id}`).remove()
     document.getElementById(`post-edit-button-${post.id}`).remove()
+    document.getElementById(`post-image-${post.id}`).remove()
 
     const save_button = document.createElement('button')
     save_button.innerHTML = "Save"
@@ -387,17 +410,22 @@ function edit_post(post) {
     post_body.append(save_button)
     
     save_button.addEventListener("click", () => {
+        console.log(post.id)
         const new_description = document.getElementById(`new-content-${post.id}`).value
+        const new_image = document.getElementById(`new_image_${post.id}`)
+
+        const formData = new FormData()
+
+        formData.append("post_id", post.id)
+        formData.append('new_image', new_image.files[0])
+        formData.append('new_description', new_description)
 
         fetch('/create_post', {
             method: "PUT",
             headers: {
                 "X-CSRFToken": getCookie("csrftoken")
             },
-            body: JSON.stringify({
-                "post_id": post.id,
-                "new_description": new_description
-            })
+            body: formData
         })
         .then(response => response.json())
         .then(response => {
@@ -420,4 +448,80 @@ function getCookie(name) {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+function edit_comment(comment, post_id) {
+    const content = document.getElementById(`comment-content-${comment.id}`)
+    const edit_button = document.getElementById(`post-comment-edit-${comment.id}`)
+
+    const likes_row = document.getElementById(`post-comment-likes-row-${comment.id}`)
+    const comment_author = document.getElementById(`post-comment-author-${comment.id}`)
+    const timestamp = document.getElementById(`post-comment-timestamp-${comment.id}`)
+
+    const comment_body = content.parentNode
+
+    const new_content_form = document.createElement('input')
+    new_content_form.type = "textarea"
+    new_content_form.id = `new_content_${comment.id}`
+    new_content_form.className = "form-control"
+    new_content_form.value = content.innerHTML
+    comment_body.append(new_content_form)
+
+    document.getElementById(`comment-content-${comment.id}`).remove()
+    document.getElementById(`post-comment-edit-${comment.id}`).remove()
+    document.getElementById(`post-comment-likes-row-${comment.id}`).remove()
+    document.getElementById(`post-comment-timestamp-${comment.id}`).remove()
+    document.getElementById(`post-comment-author-${comment.id}`).remove()
+
+    const save_button = document.createElement('button')
+    save_button.className = "btn btn-primary"
+    save_button.id = `post-comment-edit-save-button-${comment.id}`
+    save_button.innerHTML = "Save"
+    comment_body.append(save_button)
+
+    save_button.addEventListener('click', () => {
+        const new_content = document.getElementById(`new_content_${comment.id}`).value
+
+        fetch(`/post/${post_id}/comment`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                "comment_id": comment.id,
+                "new_comment": new_content
+            })
+        })
+        .then(response => response.json())
+        .then(response => {
+            content.innerHTML = new_content
+
+            save_button.remove()
+            new_content_form.remove()
+            cancel_button.remove()
+
+            comment_body.append(comment_author)
+            comment_body.append(content)
+            comment_body.append(timestamp)
+            comment_body.append(likes_row)
+            comment_body.append(edit_button)
+        })
+    })
+
+    const cancel_button = document.createElement('button')
+    cancel_button.className = "btn btn-danger"
+    cancel_button.innerHTML = "Cancel"
+    comment_body.append(cancel_button)
+
+    cancel_button.addEventListener('click', () => {
+        new_content_form.remove()
+        save_button.remove()
+        cancel_button.remove()
+
+        comment_body.append(comment_author)
+        comment_body.append(content)
+        comment_body.append(timestamp)
+        comment_body.append(likes_row)
+        comment_body.append(edit_button)
+    })
 }

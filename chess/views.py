@@ -60,6 +60,14 @@ def add_comment(request, post_id):
         newComment = Comment(author=request.user.profile, comment=comment, post=post)
         newComment.save()
         return JsonResponse({"success": True, "author": request.user.username, "timestamp": newComment.timestamp.strftime("%b %d %Y, %I:%M %p"), "newAmount": Comment.objects.filter(post=post).count(), "comment_id": newComment.id}, status=200)
+    elif request.method == "PUT":
+        data = json.loads(request.body)
+        new_comment = data.get("new_comment")
+        comment_id = data.get("comment_id")
+        comment = Comment.objects.get(pk=comment_id)
+        comment.comment = new_comment
+        comment.save()
+        return JsonResponse({"success": True})
 
 
 def comments(request, post_id):
@@ -83,11 +91,12 @@ def create_post(request):
         post.save()
         return JsonResponse({"message": "Post was created successfully."}, status=200)
     elif request.method == "PUT":
-        data = json.loads(request.body)
-        post_id = data.get("post_id")
-        new_description = data.get("new_description")
+        new_image = request.FILES.get("new_image")
+        new_description = request.POST.get("new_description")
+        post_id = int(request.POST.get("post_id"))
         post = Post.objects.get(pk=post_id)
         post.description = new_description
+        post.image = new_image
         post.save()
         return JsonResponse({"message": "Post was updated successfully."})
 

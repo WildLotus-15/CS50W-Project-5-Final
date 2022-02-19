@@ -56,7 +56,8 @@ class Comment(models.Model):
             "comment": self.comment,
             "timestamp": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "likes": self.likes.count(),
-            "liked": not user.is_anonymous and self in UserProfile.objects.get(user=user).comment_likes.all()
+            "liked": not user.is_anonymous and self in UserProfile.objects.get(user=user).comment_likes.all(),
+            "editable": self.author.user == user
         }
 
 @receiver(post_save, sender=User)
