@@ -90,6 +90,15 @@ def comments(request, post_id):
     }, safe=False)
 
 
+def remove_post(request, post_id):
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        post_id = data.get("post_id")
+        post = Post.objects.get(pk=post_id)
+        post.delete()
+        return JsonResponse({"success": True})
+
+
 def create_post(request):
     if request.method == "POST":
         image = request.FILES.get("image")

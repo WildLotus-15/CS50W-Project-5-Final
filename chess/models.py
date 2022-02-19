@@ -39,7 +39,8 @@ class Post(models.Model):
             "comments": Comment.objects.filter(post=self).count(),
             "likes": self.likes.count(),
             "liked": not user.is_anonymous and self in UserProfile.objects.get(user=user).likes.all(),
-            "editable": self.author.user == user
+            "editable": self.author.user == user,
+            "removable": self.author.user == user
         }
         
 class Comment(models.Model):

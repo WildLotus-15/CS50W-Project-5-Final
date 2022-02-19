@@ -23,6 +23,7 @@ function load_posts(addon) {
 function build_post(post) {
     const post_card = document.createElement('div')
     post_card.className = "card"
+    post_card.id = `post-card-${post.id}`
     post_card.style.width = "18rem"
 
     const image = document.createElement('img')
@@ -52,9 +53,19 @@ function build_post(post) {
         post_body.append(edit_button)
     }
 
+    if (post.removable) {
+        const remove_button = document.createElement('button')
+        remove_button.className = "btn btn-danger"
+        remove_button.id = `post-remove-button-${post.id}`
+        remove_button.innerHTML = "Remove"
+        remove_button.addEventListener('click', () => remove_post(post.id))
+
+        post_body.append(remove_button)
+    }
+
     const author = document.createElement('div')
     author.className = "card-title"
-    author.id = "post-author"
+    author.id = `post-author-${post.id}`
     author.innerHTML = post.author_username
     post_body.append(author)
 
@@ -68,6 +79,7 @@ function build_post(post) {
 
     const timestamp = document.createElement('div')
     timestamp.className = "text-muted"
+    timestamp.id = `post-timestamp-${post.id}`
     timestamp.innerHTML = post.timestamp
     post_body.append(timestamp)
 
@@ -559,5 +571,21 @@ function remove_comment(comment, post_id) {
         document.getElementById(`post-comment-remove-${comment.id}`).remove()
 
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
+    })
+}
+
+function remove_post(post_id) {
+    fetch(`post/${post_id}/remove`, {
+        method: "PUT",
+        headers: {
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({
+            "post_id": post_id
+        })
+    })
+    .then(response => response.json())
+    .then(response => {
+        document.getElementById(`post-card-${post_id}`).remove()
     })
 }
