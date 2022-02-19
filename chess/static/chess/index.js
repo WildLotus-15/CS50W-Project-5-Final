@@ -182,7 +182,7 @@ function build_comment(comment, post_id) {
     comments.append(comment_card)
 }
 
-function update_comment_like(comment_id, comments, post_id, like_amount) {
+function update_comment_like(comment_id, like_amount) {
     fetch(`comment/${comment_id}/update_like`)
     .then(response => response.json())
     .then(response => {
@@ -297,7 +297,7 @@ function load_comments(post_id) {
                 like_amount.id = `post-comments-created-amount-${response.comment_id}`
                 like_amount.style.display = 'none'
 
-                like_logo.addEventListener('click', () => update_comment_like(response.comment_id, post_id, comments, like_amount))
+                like_logo.addEventListener('click', () => update_comment_like(response.comment_id, like_amount))
 
                 const comment_author = document.createElement('div')
                 comment_author.innerHTML = response.author
