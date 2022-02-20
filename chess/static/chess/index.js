@@ -36,31 +36,54 @@ function build_post(post) {
     post_body.className = "card-body"
     post_card.append(post_body)
 
+    const drop_down = document.createElement('div')
+    drop_down.id = `post-drop-down-${post.id}`
+    drop_down.className = "dropdown"
+    post_body.append(drop_down)
+
+    const drop_button = document.createElement('button')
+    drop_button.className = "btn btn-secondary dropdown-toggle"
+    drop_button.type = "button"
+    drop_button.id = "dropdownMenuButton"
+    drop_button.ariaHasPopup = "true"
+    drop_button.ariaExpanded = "false"
+    drop_button.innerHTML = "More"
+    drop_button.setAttribute("data-toggle", "dropdown")
+    drop_down.append(drop_button)
+
+    const drop_menu = document.createElement('div')
+    drop_menu.ariaLabel = "dropdownMenuButton"
+    drop_menu.className = "dropdown-menu"
+    drop_down.append(drop_menu)
+
     const image_download = document.createElement('a')
     image_download.href = post.image
     image_download.download = post.image
     image_download.innerHTML = "Download"
+    image_download.className = "dropdown-item"
     image_download.id = `post-image-download-${post.id}`
-    post_body.append(image_download)
+    drop_menu.append(image_download)
 
     if (post.editable) {
-        const edit_button = document.createElement("button")
-        edit_button.className = "btn btn-primary"
+        const edit_button = document.createElement("a")
+        edit_button.className = "dropdown-item"
+        edit_button.href = "#"
         edit_button.id = `post-edit-button-${post.id}`
         edit_button.innerHTML = "Edit"
         edit_button.addEventListener('click', () => edit_post(post))
 
-        post_body.append(edit_button)
+        drop_menu.append(edit_button)
     }
 
     if (post.removable) {
-        const remove_button = document.createElement('button')
-        remove_button.className = "btn btn-danger"
+        const remove_button = document.createElement('a')
+        remove_button.href = "#"
+        remove_button.className = "dropdown-item"
         remove_button.id = `post-remove-button-${post.id}`
         remove_button.innerHTML = "Remove"
         remove_button.addEventListener('click', () => remove_post(post.id))
 
-        post_body.append(remove_button)
+        drop_menu.append(remove_button)
     }
 
     const author = document.createElement('div')
@@ -396,12 +419,13 @@ function create_post() {
 }
 
 function edit_post(post) {
+    const author = document.getElementById(`post-author-${post.id}`)
     const content = document.getElementById(`post-description-${post.id}`)
     const image = document.getElementById(`post-image-${post.id}`)
     const comments = document.getElementById(`post-view-comments-${post.id}`)
     const likes_row = document.getElementById(`post-likes-row-${post.id}`)
-    const download = document.getElementById(`post-image-download-${post.id}`)
-    const edit_button = document.getElementById(`post-edit-button-${post.id}`)
+    const drop_down = document.getElementById(`post-drop-down-${post.id}`)
+    const timestamp = document.getElementById(`post-timestamp-${post.id}`)
 
     const post_body = content.parentNode
 
@@ -419,12 +443,13 @@ function edit_post(post) {
     new_image_form.value = ""
     post_body.append(new_image_form)
 
+    document.getElementById(`post-author-${post.id}`).remove()
+    document.getElementById(`post-timestamp-${post.id}`).remove()
+    document.getElementById(`post-image-${post.id}`).remove()
     document.getElementById(`post-description-${post.id}`).remove()
+    document.getElementById(`post-drop-down-${post.id}`).remove()
     document.getElementById(`post-view-comments-${post.id}`).remove()
     document.getElementById(`post-likes-row-${post.id}`).remove()
-    document.getElementById(`post-image-download-${post.id}`).remove()
-    document.getElementById(`post-edit-button-${post.id}`).remove()
-    document.getElementById(`post-image-${post.id}`).remove()
 
     const save_button = document.createElement('button')
     save_button.innerHTML = "Save"
@@ -458,11 +483,31 @@ function edit_post(post) {
             post_body.append(content)
             post_body.append(comments)
             post_body.append(likes_row)
-            post_body.append(download)
-            post_body.append(edit_button)
+            post_body.append(drop_down)
 
             console.log(response.message)
         })
+    })
+
+    const cancel_button = document.createElement('button')
+    cancel_button.className = "btn btn-danger"
+    cancel_button.innerHTML = "Cancel"
+    cancel_button.id = `post-edit-cancel-button-${post.id}`
+    post_body.append(cancel_button)
+
+    cancel_button.addEventListener('click', () => {
+        new_description_form.remove()
+        save_button.remove()
+        cancel_button.remove()
+        new_image_form.remove()
+
+        post_body.append(image)
+        post_body.append(drop_down)
+        post_body.append(author)
+        post_body.append(content)
+        post_body.append(timestamp)
+        post_body.append(comments)
+        post_body.append(likes_row)
     })
 }
 
