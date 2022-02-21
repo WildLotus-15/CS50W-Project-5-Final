@@ -367,9 +367,20 @@ function load_comments(post_id) {
 
                 const like_amount = document.createElement('div')
                 like_amount.id = `post-comments-created-amount-${response.comment_id}`
-                like_amount.style.display = 'none'
+                if (response.newAmount == 0) {
+                    like_amount.style.display = 'none'
+                } else {
+                    like_amount.style.display = "block"
+                }
 
                 like_logo.addEventListener('click', () => update_comment_like(response.comment_id, like_amount))
+
+                const edit_button = document.createElement('button')
+                edit_button.id = `post-comment-created-edit-button-${response.comment_id}`
+                edit_button.className = "btn btn-primary"
+                edit_button.innerHTML = "Edit"
+
+                edit_button.addEventListener("click", () => edit_created_comment(response.comment_id, post_id, like_logo, like_amount))
 
                 const remove_button = document.createElement('button')
                 remove_button.id = `post-comment-created-remove-button-${response.comment_id}`
@@ -393,9 +404,11 @@ function load_comments(post_id) {
                 comments.append(comment_author)
                 comments.append(comment_content)
                 comments.append(comment_timestamp)
+                comments.append(edit_button)
+                comments.append(remove_button)
                 comments.append(like_logo)
                 comments.append(like_amount)
-                comments.append(remove_button)
+
                 document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
             } else {
                 alert("You cant comment!")
@@ -669,13 +682,96 @@ function remove_created_comment(comment_id, post_id) {
     })
     .then(response => response.json())
     .then(response => {
-        document.getElementById(`post-comments-created-amount-${comment_id}`).innerHTML = `Comments ${response.newAmount}`
         document.getElementById(`post-comments-created-like-logo-${comment_id}`).remove()
         document.getElementById(`post-comment-created-author-${comment_id}`).remove()
         document.getElementById(`post-comment-created-timestamp-${comment_id}`).remove()
         document.getElementById(`post-comment-created-content-${comment_id}`).remove()
         document.getElementById(`post-comment-created-remove-button-${comment_id}`).remove()
+        document.getElementById(`post-comment-created-edit-button-${comment_id}`).remove()
         
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
+    })
+}
+
+function edit_created_comment(comment_id, post_id, like_logo, like_amount) {
+    const content = document.getElementById(`post-comment-created-content-${comment_id}`)
+    const edit_button = document.getElementById(`post-comment-created-edit-button-${comment_id}`)
+
+    const comment_author = document.getElementById(`post-comment-created-author-${comment_id}`)
+    const timestamp = document.getElementById(`post-comment-created-timestamp-${comment_id}`)
+    const remove = document.getElementById(`post-comment-created-remove-button-${comment_id}`)
+
+    const comment_body = content.parentNode
+
+    const new_content_form = document.createElement('input')
+    new_content_form.type = "textarea"
+    new_content_form.id = `new_content_${comment_id}`
+    new_content_form.className = "form-control"
+    new_content_form.value = content.innerHTML
+    comment_body.append(new_content_form)
+
+    document.getElementById(`post-comment-created-content-${comment_id}`).remove()
+    document.getElementById(`post-comment-created-edit-button-${comment_id}`).remove()
+    document.getElementById(`post-comments-created-like-logo-${comment_id}`).remove()
+    document.getElementById(`post-comments-created-amount-${comment_id}`).remove()
+    document.getElementById(`post-comment-created-timestamp-${comment_id}`).remove()
+    document.getElementById(`post-comment-created-author-${comment_id}`).remove()
+    document.getElementById(`post-comment-created-remove-button-${comment_id}`).remove()
+
+    const save_button = document.createElement('button')
+    save_button.className = "btn btn-primary"
+    save_button.id = `post-comment-edit-save-button-${comment_id}`
+    save_button.innerHTML = "Save"
+    comment_body.append(save_button)
+
+    save_button.addEventListener('click', () => {
+        const new_content = document.getElementById(`new_content_${comment_id}`).value
+
+        fetch(`/post/${post_id}/comment`, {
+            method: "PUT",
+            headers: {
+                "X-CSRFToken": getCookie("csrftoken")
+            },
+            body: JSON.stringify({
+                "action": "edit",
+                "comment_id": comment_id,
+                "new_comment": new_content
+            })
+        })
+        .then(response => response.json())
+        .then(response => {
+            content.innerHTML = new_content
+
+            save_button.remove()
+            new_content_form.remove()
+            cancel_button.remove()
+
+            comment_body.append(comment_author)
+            comment_body.append(content)
+            comment_body.append(timestamp)
+            comment_body.append(edit_button)
+            comment_body.append(remove)
+            comment_body.append(like_logo)
+            comment_body.append(like_amount)
+        })
+    })
+
+    const cancel_button = document.createElement('button')
+    cancel_button.className = "btn btn-danger"
+    cancel_button.innerHTML = "Cancel"
+    comment_body.append(cancel_button)
+
+    cancel_button.addEventListener('click', () => {
+        new_content_form.remove()
+        save_button.remove()
+        cancel_button.remove()
+
+        comment_body.append(comment_author)
+        comment_body.append(content)
+        comment_body.append(timestamp)
+        comment_body.append(edit_button)
+        comment_body.append(remove)
+        comment_body.append(like_logo)
+        comment_body.append(like_amount)
     })
 }
