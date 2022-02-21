@@ -70,7 +70,7 @@ function build_post(post) {
         edit_button.href = "#"
         edit_button.id = `post-edit-button-${post.id}`
         edit_button.innerHTML = "Edit"
-        edit_button.addEventListener('click', () => edit_post(post))
+        edit_button.addEventListener('click', () => edit_post(post, post_card))
 
         drop_menu.append(edit_button)
     }
@@ -445,7 +445,7 @@ function create_post() {
     })
 }
 
-function edit_post(post) {
+function edit_post(post, post_card) {
     const author = document.getElementById(`post-author-${post.id}`)
     const content = document.getElementById(`post-description-${post.id}`)
     const image = document.getElementById(`post-image-${post.id}`)
@@ -504,19 +504,21 @@ function edit_post(post) {
         .then(response => response.json())
         .then(response => {
             content.innerHTML = new_description
-            drop_down.click()
+            image.src = response.new_image
 
             new_description_form.remove()
             new_image_form.remove()
             save_button.remove()
             cancel_button.remove()
             
-            post_body.append(image)
+            post_card.append(image)
             post_body.append(drop_down)
             post_body.append(author)
             post_body.append(content)
+            post_body.append(timestamp)
             post_body.append(comments)
             post_body.append(likes_row)
+            post_card.append(post_body)
 
             console.log(response.message)
         })
@@ -534,13 +536,14 @@ function edit_post(post) {
         cancel_button.remove()
         new_image_form.remove()
 
-        post_body.append(image)
+        post_card.append(image)
         post_body.append(drop_down)
         post_body.append(author)
         post_body.append(content)
         post_body.append(timestamp)
         post_body.append(comments)
         post_body.append(likes_row)
+        post_card.append(post_body)
     })
 }
 

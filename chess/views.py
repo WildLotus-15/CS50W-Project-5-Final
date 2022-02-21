@@ -1,12 +1,12 @@
 import json
-from django.utils import timezone
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth import login, logout, authenticate
+from django.core.files.base import ContentFile
 
-from chess.models import Post, User, UserProfile, Comment
+from chess.models import Image, Post, User, UserProfile, Comment
 
 # Create your views here.
 def index(request):
@@ -71,6 +71,7 @@ def add_comment(request, post_id):
             comment.comment = new_comment
             comment.save()
             return JsonResponse({"success": True})
+                
         elif action == "remove":
             comment_id = data.get("comment_id")
             post_id = data.get("post_id")
@@ -117,10 +118,10 @@ def edit_post(request, post_id):
         new_description = request.POST.get("new_description")
         post_id = request.POST.get("post_id")
         post = Post.objects.get(pk=post_id)
-        post.description = new_description
         post.image = new_image
+        post.description= new_description
         post.save()
-        return JsonResponse({"message": "Post was updated successfully."})
+        return JsonResponse({"message": "Post was updated successfully.", "new_image": post.image.url})
 
 
 def profile(request, profile_id):

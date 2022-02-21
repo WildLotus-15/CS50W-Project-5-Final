@@ -62,6 +62,9 @@ class Comment(models.Model):
             "removable": self.author.user == user
         }
 
+class Image(models.Model):
+    image = models.ImageField()
+
 @receiver(post_save, sender=User)
 def create_user_profile(created, sender, instance, **kwargs):
     if created:
