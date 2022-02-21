@@ -1,6 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
     load_posts("")
 
+    document.getElementById("new_post").disabled = true
+
+    const description = document.getElementById("description")
+    const image = document.getElementById("image")
+
+    document.querySelector('form').onchange = () => {
+        if (description.value == "" && image.value.length > 0) {
+            document.getElementById("new_post").disabled = true
+        } else {
+            document.getElementById("new_post").disabled = false
+        }    
+    }
     document.querySelector('form').onsubmit = create_post
 })
 
@@ -516,8 +528,8 @@ function edit_post(post, post_card) {
             post_body.append(author)
             post_body.append(content)
             post_body.append(timestamp)
-            post_body.append(comments)
             post_body.append(likes_row)
+            post_body.append(comments)
             post_card.append(post_body)
 
             console.log(response.message)
@@ -541,8 +553,8 @@ function edit_post(post, post_card) {
         post_body.append(author)
         post_body.append(content)
         post_body.append(timestamp)
-        post_body.append(comments)
         post_body.append(likes_row)
+        post_body.append(comments)
         post_card.append(post_body)
     })
 }
