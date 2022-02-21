@@ -371,13 +371,23 @@ function load_comments(post_id) {
 
                 like_logo.addEventListener('click', () => update_comment_like(response.comment_id, like_amount))
 
+                const remove_button = document.createElement('button')
+                remove_button.id = `post-comment-created-remove-button-${response.comment_id}`
+                remove_button.innerHTML = "Remove"
+                remove_button.className = "btn btn-danger"
+
+                remove_button.addEventListener('click', () => remove_created_comment(response.comment_id, post_id))
+
                 const comment_author = document.createElement('div')
+                comment_author.id = `post-comment-created-author-${response.comment_id}`
                 comment_author.innerHTML = response.author
 
                 const comment_content = document.createElement('div')
+                comment_content.id = `post-comment-created-content-${response.comment_id}`
                 comment_content.innerHTML = comment
 
                 const comment_timestamp = document.createElement('div')
+                comment_timestamp.id = `post-comment-created-timestamp-${response.comment_id}`
                 comment_timestamp.innerHTML = response.timestamp
 
                 comments.append(comment_author)
@@ -385,6 +395,7 @@ function load_comments(post_id) {
                 comments.append(comment_timestamp)
                 comments.append(like_logo)
                 comments.append(like_amount)
+                comments.append(remove_button)
                 document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
             } else {
                 alert("You cant comment!")
@@ -399,10 +410,13 @@ function create_post() {
     const image = document.getElementById('image')
     const description = document.getElementById("description").value
 
-    formData.append('image', image.files[0])
-    formData.append('description', description)
+    if (!image.files[0]) {
+        formData.append('description', description)    
+    } else {
+        formData.append('image', image.files[0])
+        formData.append('description', description)            
+    }
     
-
     fetch('create_post', {
         method: "POST",
         headers: {
@@ -429,19 +443,18 @@ function edit_post(post) {
 
     const post_body = content.parentNode
 
+    const new_image_form = document.createElement('input')
+    new_image_form.id = `new_image_${post.id}`
+    new_image_form.type = 'file'
+    new_image_form.accept = "image/png, image/jpg"
+    post_body.append(new_image_form)
+
     const new_description_form = document.createElement('input')
     new_description_form.id = `new-content-${post.id}`
     new_description_form.type = "textarea"
     new_description_form.className = "form-control"
     new_description_form.value = content.innerHTML
     post_body.append(new_description_form)
-
-    const new_image_form = document.createElement('input')
-    new_image_form.id = `new_image_${post.id}`
-    new_image_form.type = 'file'
-    new_image_form.accept = "image/png, image/jpg"
-    new_image_form.value = ""
-    post_body.append(new_image_form)
 
     document.getElementById(`post-author-${post.id}`).remove()
     document.getElementById(`post-timestamp-${post.id}`).remove()
@@ -457,18 +470,19 @@ function edit_post(post) {
     post_body.append(save_button)
     
     save_button.addEventListener("click", () => {
-        console.log(post.id)
         const new_description = document.getElementById(`new-content-${post.id}`).value
         const new_image = document.getElementById(`new_image_${post.id}`)
 
         const formData = new FormData()
 
-        formData.append("post_id", post.id)
         formData.append('new_image', new_image.files[0])
         formData.append('new_description', new_description)
+        formData.append("post_id", post.id)
 
-        fetch('/create_post', {
-            method: "PUT",
+        console.log(formData.get("new_image"))
+
+        fetch(`/post/${post.id}/edit`, {
+            method: "POST",
             headers: {
                 "X-CSRFToken": getCookie("csrftoken")
             },
@@ -477,13 +491,19 @@ function edit_post(post) {
         .then(response => response.json())
         .then(response => {
             content.innerHTML = new_description
+            drop_down.click()
 
             new_description_form.remove()
+            new_image_form.remove()
             save_button.remove()
+            cancel_button.remove()
+            
+            post_body.append(image)
+            post_body.append(drop_down)
+            post_body.append(author)
             post_body.append(content)
             post_body.append(comments)
             post_body.append(likes_row)
-            post_body.append(drop_down)
 
             console.log(response.message)
         })
@@ -632,5 +652,30 @@ function remove_post(post_id) {
     .then(response => response.json())
     .then(response => {
         document.getElementById(`post-card-${post_id}`).remove()
+    })
+}
+
+function remove_created_comment(comment_id, post_id) {
+    fetch(`post/${post_id}/comment`, {
+        method: "PUT",
+        headers: {
+            'X-CSRFToken': getCookie("csrftoken")
+        },
+        body: JSON.stringify({
+            "action": "remove",
+            "comment_id": comment_id,
+            "post_id": post_id
+        })
+    })
+    .then(response => response.json())
+    .then(response => {
+        document.getElementById(`post-comments-created-amount-${comment_id}`).innerHTML = `Comments ${response.newAmount}`
+        document.getElementById(`post-comments-created-like-logo-${comment_id}`).remove()
+        document.getElementById(`post-comment-created-author-${comment_id}`).remove()
+        document.getElementById(`post-comment-created-timestamp-${comment_id}`).remove()
+        document.getElementById(`post-comment-created-content-${comment_id}`).remove()
+        document.getElementById(`post-comment-created-remove-button-${comment_id}`).remove()
+        
+        document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
     })
 }

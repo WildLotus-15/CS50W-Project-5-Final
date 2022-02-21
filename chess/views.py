@@ -109,10 +109,13 @@ def create_post(request):
             post = Post(author=request.user.profile, description=description)            
         post.save()
         return JsonResponse({"message": "Post was created successfully."}, status=200)
-    elif request.method == "PUT":
+
+
+def edit_post(request, post_id):
+    if request.method == "POST":
         new_image = request.FILES.get("new_image")
         new_description = request.POST.get("new_description")
-        post_id = int(request.POST.get("post_id"))
+        post_id = request.POST.get("post_id")
         post = Post.objects.get(pk=post_id)
         post.description = new_description
         post.image = new_image

@@ -23,8 +23,8 @@ class UserProfile(models.Model):
 
 class Post(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-    image = models.ImageField(null=True, blank=True)
-    description = models.CharField(max_length=64)
+    image = models.ImageField(null=True)
+    description = models.CharField(max_length=64, null=True, default=None)
     timestamp = models.DateTimeField(default=timezone.now)
     likes = models.ManyToManyField(UserProfile, blank=True, related_name="likes")
 
