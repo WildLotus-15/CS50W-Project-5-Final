@@ -398,19 +398,40 @@ function load_comments(post_id) {
 
                 like_logo.addEventListener('click', () => update_comment_like(response.comment_id, like_amount))
 
-                const edit_button = document.createElement('button')
-                edit_button.id = `post-comment-created-edit-button-${response.comment_id}`
-                edit_button.className = "btn btn-primary"
-                edit_button.innerHTML = "Edit"
+                const comment_dropdown = document.createElement('div')
+                comment_dropdown.className = "dropdown text-right"
+                comment_dropdown.id = `comment-created-dropdown-${response.comment_id}`
+                
+                const comment_dropdown_button = document.createElement('button')
+                comment_dropdown_button.innerHTML = "..."
+                comment_dropdown_button.className = "btn btn-secondary dropdown-toggle"
+                comment_dropdown_button.type = "button"
+                comment_dropdown_button.ariaHasPopup = "true"
+                comment_dropdown_button.ariaExpanded = "false"
+                comment_dropdown_button.setAttribute("data-toggle", "dropdown")
+                comment_dropdown.append(comment_dropdown_button)
 
-                edit_button.addEventListener("click", () => edit_created_comment(response.comment_id, post_id, like_logo, like_amount))
+                const comment_dropdown_menu = document.createElement('div')
+                comment_dropdown_menu.className = "dropdown-menu"
+                comment_dropdown.append(comment_dropdown_menu)
 
-                const remove_button = document.createElement('button')
-                remove_button.id = `post-comment-created-remove-button-${response.comment_id}`
-                remove_button.innerHTML = "Remove"
-                remove_button.className = "btn btn-danger"
+                const comment_edit = document.createElement('a')
+                comment_edit.className = "dropdown-item"
+                comment_edit.href = "#"
+                comment_edit.id = `post-comment-edit-${comment.id}`
+                comment_edit.innerHTML = "Edit"
+                comment_dropdown_menu.append(comment_edit)
+            
+                comment_edit.addEventListener('click', () => edit_created_comment(response.comment_id, post_id, like_amount, like_logo))    
 
-                remove_button.addEventListener('click', () => remove_created_comment(response.comment_id, post_id))
+                const comment_remove = document.createElement('a')
+                comment_remove.href = "#"
+                comment_remove.className = "dropdown-item"
+                comment_remove.id = `post-comment-remove-${comment.id}`
+                comment_remove.innerHTML = "Remove"
+                comment_dropdown_menu.append(comment_remove)
+
+                comment_remove.addEventListener('click', () => remove_created_comment(response.comment_id, post_id, like_amount, like_logo))
 
                 const comment_author = document.createElement('div')
                 comment_author.id = `post-comment-created-author-${response.comment_id}`
@@ -425,11 +446,10 @@ function load_comments(post_id) {
                 comment_timestamp.id = `post-comment-created-timestamp-${response.comment_id}`
                 comment_timestamp.innerHTML = response.timestamp
 
+                comments.append(comment_dropdown)
                 comments.append(comment_author)
                 comments.append(comment_content)
                 comments.append(comment_timestamp)
-                comments.append(edit_button)
-                comments.append(remove_button)
                 comments.append(like_logo)
                 comments.append(like_amount)
 
@@ -715,20 +735,18 @@ function remove_created_comment(comment_id, post_id) {
         document.getElementById(`post-comment-created-author-${comment_id}`).remove()
         document.getElementById(`post-comment-created-timestamp-${comment_id}`).remove()
         document.getElementById(`post-comment-created-content-${comment_id}`).remove()
-        document.getElementById(`post-comment-created-remove-button-${comment_id}`).remove()
-        document.getElementById(`post-comment-created-edit-button-${comment_id}`).remove()
+        document.getElementById(`comment-dropdown-${comment_id}`).remove()
         
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
     })
 }
 
-function edit_created_comment(comment_id, post_id, like_logo, like_amount) {
+function edit_created_comment(comment_id, post_id, like_logo, like_amount, comment_dropdown) {
     const content = document.getElementById(`post-comment-created-content-${comment_id}`)
-    const edit_button = document.getElementById(`post-comment-created-edit-button-${comment_id}`)
 
     const comment_author = document.getElementById(`post-comment-created-author-${comment_id}`)
     const timestamp = document.getElementById(`post-comment-created-timestamp-${comment_id}`)
-    const remove = document.getElementById(`post-comment-created-remove-button-${comment_id}`)
+    const dropdown = document.getElementById(`comment-created-dropdown-${comment_id}`)
 
     const comment_body = content.parentNode
 
@@ -739,13 +757,12 @@ function edit_created_comment(comment_id, post_id, like_logo, like_amount) {
     new_content_form.value = content.innerHTML
     comment_body.append(new_content_form)
 
+    document.getElementById(`comment-created-dropdown-${comment_id}`).remove()
     document.getElementById(`post-comment-created-content-${comment_id}`).remove()
-    document.getElementById(`post-comment-created-edit-button-${comment_id}`).remove()
     document.getElementById(`post-comments-created-like-logo-${comment_id}`).remove()
     document.getElementById(`post-comments-created-amount-${comment_id}`).remove()
     document.getElementById(`post-comment-created-timestamp-${comment_id}`).remove()
     document.getElementById(`post-comment-created-author-${comment_id}`).remove()
-    document.getElementById(`post-comment-created-remove-button-${comment_id}`).remove()
 
     const save_button = document.createElement('button')
     save_button.className = "btn btn-primary"
@@ -775,11 +792,10 @@ function edit_created_comment(comment_id, post_id, like_logo, like_amount) {
             new_content_form.remove()
             cancel_button.remove()
 
+            comment_body.append(dropdown)
             comment_body.append(comment_author)
             comment_body.append(content)
-            comment_body.append(timestamp)
-            comment_body.append(edit_button)
-            comment_body.append(remove)
+            comment_body.append(timestamp)  
             comment_body.append(like_logo)
             comment_body.append(like_amount)
         })
@@ -795,11 +811,10 @@ function edit_created_comment(comment_id, post_id, like_logo, like_amount) {
         save_button.remove()
         cancel_button.remove()
 
+        comment_body.append(dropdown)
         comment_body.append(comment_author)
         comment_body.append(content)
         comment_body.append(timestamp)
-        comment_body.append(edit_button)
-        comment_body.append(remove)
         comment_body.append(like_logo)
         comment_body.append(like_amount)
     })
