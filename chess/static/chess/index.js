@@ -1,18 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     load_posts("")
 
-    document.getElementById("new_post").disabled = true
-
-    const description = document.getElementById("description")
-    const image = document.getElementById("image")
-
-    document.querySelector('form').onchange = () => {
-        if (description.value == "" && image.value.length > 0) {
-            document.getElementById("new_post").disabled = true
-        } else {
-            document.getElementById("new_post").disabled = false
-        }    
-    }
     document.querySelector('form').onsubmit = create_post
 })
 
@@ -50,7 +38,7 @@ function build_post(post) {
 
     const drop_down = document.createElement('div')
     drop_down.id = `post-drop-down-${post.id}`
-    drop_down.className = "dropdown"
+    drop_down.className = "dropdown text-right"
     post_body.append(drop_down)
 
     const drop_button = document.createElement('button')
@@ -59,7 +47,7 @@ function build_post(post) {
     drop_button.id = "dropdownMenuButton"
     drop_button.ariaHasPopup = "true"
     drop_button.ariaExpanded = "false"
-    drop_button.innerHTML = "More"
+    drop_button.innerHTML = "..."
     drop_button.setAttribute("data-toggle", "dropdown")
     drop_down.append(drop_button)
 
@@ -67,14 +55,6 @@ function build_post(post) {
     drop_menu.ariaLabel = "dropdownMenuButton"
     drop_menu.className = "dropdown-menu"
     drop_down.append(drop_menu)
-
-    const image_download = document.createElement('a')
-    image_download.href = post.image
-    image_download.download = post.image
-    image_download.innerHTML = "Download"
-    image_download.className = "dropdown-item"
-    image_download.id = `post-image-download-${post.id}`
-    drop_menu.append(image_download)
 
     if (post.editable) {
         const edit_button = document.createElement("a")
@@ -85,9 +65,7 @@ function build_post(post) {
         edit_button.addEventListener('click', () => edit_post(post, post_card))
 
         drop_menu.append(edit_button)
-    }
 
-    if (post.removable) {
         const remove_button = document.createElement('a')
         remove_button.href = "#"
         remove_button.className = "dropdown-item"
@@ -97,6 +75,14 @@ function build_post(post) {
 
         drop_menu.append(remove_button)
     }
+
+    const image_download = document.createElement('a')
+    image_download.href = post.image
+    image_download.download = post.image
+    image_download.innerHTML = "Download"
+    image_download.className = "dropdown-item"
+    image_download.id = `post-image-download-${post.id}`
+    drop_menu.append(image_download)
 
     const author = document.createElement('div')
     author.className = "card-title"
@@ -201,6 +187,44 @@ function build_comment(comment, post_id) {
     const comment_card = document.createElement('div')
     comment_card.id = `post-comment-card-${post_id}`
 
+    if (comment.editable) {
+        const comment_dropdown = document.createElement('div')
+        comment_dropdown.className = "dropdown text-right"
+        comment_dropdown.id = `comment-dropdown-${comment.id}`
+        comment_card.append(comment_dropdown)
+        
+        const comment_dropdown_button = document.createElement('button')
+        comment_dropdown_button.innerHTML = "..."
+        comment_dropdown_button.className = "btn btn-secondary dropdown-toggle"
+        comment_dropdown_button.type = "button"
+        comment_dropdown_button.ariaHasPopup = "true"
+        comment_dropdown_button.ariaExpanded = "false"
+        comment_dropdown_button.setAttribute("data-toggle", "dropdown")
+        comment_dropdown.append(comment_dropdown_button)
+
+        const comment_dropdown_menu = document.createElement('div')
+        comment_dropdown_menu.className = "dropdown-menu"
+        comment_dropdown.append(comment_dropdown_menu)
+
+        const comment_edit = document.createElement('a')
+        comment_edit.className = "dropdown-item"
+        comment_edit.href = "#"
+        comment_edit.id = `post-comment-edit-${comment.id}`
+        comment_edit.innerHTML = "Edit"
+        comment_dropdown_menu.append(comment_edit)
+    
+        comment_edit.addEventListener('click', () => edit_comment(comment, post_id))    
+
+        const comment_remove = document.createElement('a')
+        comment_remove.href = "#"
+        comment_remove.className = "dropdown-item"
+        comment_remove.id = `post-comment-remove-${comment.id}`
+        comment_remove.innerHTML = "Remove"
+        comment_dropdown_menu.append(comment_remove)
+
+        comment_remove.addEventListener('click', () => remove_comment(comment, post_id))
+    }
+
     const comment_author = document.createElement('div')
     comment_author.id = `post-comment-author-${comment.id}`
     comment_author.innerHTML = comment.author_username
@@ -216,26 +240,6 @@ function build_comment(comment, post_id) {
     comment_timestamp.className = "text-muted" 
     comment_timestamp.innerHTML = comment.timestamp
     comment_card.append(comment_timestamp)
-
-    if (comment.editable) {
-        const comment_edit = document.createElement('button')
-        comment_edit.className = "btn btn-primary"
-        comment_edit.id = `post-comment-edit-${comment.id}`
-        comment_edit.innerHTML = "Edit"
-        comment_card.append(comment_edit)
-    
-        comment_edit.addEventListener('click', () => edit_comment(comment, post_id))    
-    }
-
-    if (comment.removable) {
-        const comment_remove = document.createElement('button')
-        comment_remove.className = "btn btn-danger"
-        comment_remove.id = `post-comment-remove-${comment.id}`
-        comment_remove.innerHTML = "Remove"
-        comment_card.append(comment_remove)
-
-        comment_remove.addEventListener('click', () => remove_comment(comment, post_id))
-    }
 
     const likes_row = document.createElement('div')
     likes_row.id = `post-comment-likes-row-${comment.id}`
@@ -341,7 +345,14 @@ function load_comments(post_id) {
     post_body.append(hide_button)
 
     hide_button.addEventListener('click', () => {
-        document.getElementById(`post-comments-${post_id}`).style.display = "none" 
+        const post_comments = document.getElementById(`post-comments-${post_id}`)
+        const comments = post_comments.childNodes
+        console.log(comments)
+        
+        comments.forEach(comment => {
+            comment.remove()
+        })
+
         document.getElementById(`post-comments-amount-${post_id}`).style.display = "none" 
         document.getElementById(`post-view-comments-${post_id}`).style.display = "block"
         document.getElementById(`post-comment-hide-button-${post_id}`).remove() 
@@ -410,6 +421,7 @@ function load_comments(post_id) {
                 comment_content.innerHTML = comment
 
                 const comment_timestamp = document.createElement('div')
+                comment_timestamp.className = "text-muted"
                 comment_timestamp.id = `post-comment-created-timestamp-${response.comment_id}`
                 comment_timestamp.innerHTML = response.timestamp
 
@@ -567,11 +579,11 @@ function getCookie(name) {
 
 function edit_comment(comment, post_id) {
     const content = document.getElementById(`comment-content-${comment.id}`)
-    const edit_button = document.getElementById(`post-comment-edit-${comment.id}`)
 
     const likes_row = document.getElementById(`post-comment-likes-row-${comment.id}`)
     const comment_author = document.getElementById(`post-comment-author-${comment.id}`)
     const timestamp = document.getElementById(`post-comment-timestamp-${comment.id}`)
+    const dropdown = document.getElementById(`comment-dropdown-${comment.id}`)
 
     const comment_body = content.parentNode
 
@@ -582,8 +594,8 @@ function edit_comment(comment, post_id) {
     new_content_form.value = content.innerHTML
     comment_body.append(new_content_form)
 
+    document.getElementById(`comment-dropdown-${comment.id}`).remove()
     document.getElementById(`comment-content-${comment.id}`).remove()
-    document.getElementById(`post-comment-edit-${comment.id}`).remove()
     document.getElementById(`post-comment-likes-row-${comment.id}`).remove()
     document.getElementById(`post-comment-timestamp-${comment.id}`).remove()
     document.getElementById(`post-comment-author-${comment.id}`).remove()
@@ -616,11 +628,11 @@ function edit_comment(comment, post_id) {
             new_content_form.remove()
             cancel_button.remove()
 
+            comment_body.append(dropdown)
             comment_body.append(comment_author)
             comment_body.append(content)
             comment_body.append(timestamp)
             comment_body.append(likes_row)
-            comment_body.append(edit_button)
         })
     })
 
@@ -634,6 +646,7 @@ function edit_comment(comment, post_id) {
         save_button.remove()
         cancel_button.remove()
 
+        comment_body.append(dropdown)
         comment_body.append(comment_author)
         comment_body.append(content)
         comment_body.append(timestamp)
@@ -662,6 +675,7 @@ function remove_comment(comment, post_id) {
         document.getElementById(`comment-content-${comment.id}`).remove()
         document.getElementById(`post-comment-edit-${comment.id}`).remove()
         document.getElementById(`post-comment-remove-${comment.id}`).remove()
+        document.getElementById(`comment-dropdown-${comment.id}`).remove()
 
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
     })
