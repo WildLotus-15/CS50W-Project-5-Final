@@ -46,10 +46,6 @@ def update_comment_like(request, comment_id):
     return JsonResponse({"newLike": newStatus, "newAmount": comment.likes.count()}, status=200)
 
 
-def show_profile(request, profile_id):
-    profile = UserProfile.objects.get(pk=profile_id)
-    return JsonResponse(profile.serialize(request.user), safe=False)
-
 
 def add_comment(request, post_id):
     if request.method == "POST":
@@ -79,6 +75,24 @@ def add_comment(request, post_id):
             comment = Comment.objects.get(pk=comment_id)
             comment.delete()
             return JsonResponse({"success": True, "newAmount": Comment.objects.filter(post=post).count()})
+
+
+def update_favourites(request, post_id):
+    post = Post.objects.get(pk=post_id)
+    if request.user.profile in post.favourites.all():
+        post.favourites.remove(request.user.profile)
+        newStatus = False
+    else:
+        post.favourites.add(request.user.profile)
+        newStatus = True
+    return JsonResponse({"newFavourite": newStatus})
+
+
+def favourites(request):
+    posts = request.user.profile.favourites.all()
+    return JsonResponse({
+        "posts": [post.serialize(request.user) for post in posts]
+    }, safe=False)
 
 
 def comments(request, post_id):

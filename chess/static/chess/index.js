@@ -1,12 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
     load_posts("")
 
+    if (document.getElementById('favourite')) {
+        document.getElementById('favourite').addEventListener('click', () => load_posts('/favourite'))
+    } else {
+        document.getElementById(`newPost`).addEventListener('click', () => force_login())
+    }
+
     document.querySelector('form').onsubmit = create_post
 })
+
+function force_login() {
+    document.getElementById('login').click()
+}
 
 function load_posts(addon) {
     if (addon.includes('?')) {
         addon += ''
+    } else if (addon.includes('/')) {
+        document.querySelector("#newPost").style.display = 'none'
     } else {
         document.querySelector('#profile').style.display = "none"
     }
@@ -84,6 +96,19 @@ function build_post(post) {
     image_download.id = `post-image-download-${post.id}`
     drop_menu.append(image_download)
 
+    const add_favourite = document.createElement('a')
+    add_favourite.href = "#"
+    add_favourite.className = "dropdown-item"
+    if (post.favourited) {
+        add_favourite.innerHTML = "Remove From Favourites"
+    } else {
+        add_favourite.innerHTML = "Add To Favourites"
+    }
+    add_favourite.id = `post-add-favourite-${post.id}`
+    drop_menu.append(add_favourite)
+
+    add_favourite.addEventListener('click', () => update_favourites(post))
+
     const row = document.createElement('div')
     row.className = 'row'
     post_body.append(row)
@@ -160,6 +185,18 @@ function build_post(post) {
     document.querySelector("#posts").append(post_card)
 }
 
+function update_favourites(post) {
+    fetch(`post/${post.id}/update_favourites`)
+    .then(response => response.json())
+    .then(response => {
+        if (response.newFavourite) {
+            document.getElementById(`post-add-favourite-${post.id}`).innerHTML = "Remove From Favourites"
+        } else {
+            document.getElementById(`post-add-favourite-${post.id}`).innerHTML = "Add To Favourites"
+        }
+    })
+}
+
 function update_like(post_id) {
     fetch(`post/${post_id}/update_like`)
     .then(response => response.json())
@@ -184,17 +221,20 @@ function show_profile(author_id) {
     load_posts(`?profile=${author_id}`)
     document.querySelector('#newPost').style.display = "none"
     document.querySelector('#profile').style.display = "block"
-    document.getElementById('profile_edit').style.display = "none"
+    const profile_edit_button = document.getElementById('profile_edit')
+    profile_edit_button.style.display = 'none'
     fetch(`profile/${author_id}`)
     .then(response => response.json())
     .then(response => {
-        if (response.editable) {
-            document.getElementById('profile_edit').style.display = "unset"            
-        }
         document.querySelector('#profile_username').innerHTML = response.profile_username
         document.getElementById('profile_image').src = response.profile_picture
         document.getElementById('profile_joined').innerHTML = response.profile_joined
         document.getElementById('profile_bio').innerHTML = response.profile_bio
+        document.getElementById('profile_post_amount').innerHTML = response.profile_posts
+
+        if (response.editable) {
+            profile_edit_button.style.display = 'unset'
+        }
 
         console.log(response)
     })
