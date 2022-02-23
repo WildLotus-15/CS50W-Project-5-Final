@@ -48,7 +48,7 @@ def update_comment_like(request, comment_id):
 
 def show_profile(request, profile_id):
     profile = UserProfile.objects.get(pk=profile_id)
-    return JsonResponse(profile.serialize(), safe=False)
+    return JsonResponse(profile.serialize(request.user), safe=False)
 
 
 def add_comment(request, post_id):
@@ -126,7 +126,7 @@ def edit_post(request, post_id):
 
 def profile(request, profile_id):
     profile = UserProfile.objects.get(pk=profile_id)
-    return JsonResponse(profile.serialize(), safe=False)
+    return JsonResponse(profile.serialize(request.user), safe=False)
 
 
 def login_view(request):

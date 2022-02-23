@@ -84,11 +84,22 @@ function build_post(post) {
     image_download.id = `post-image-download-${post.id}`
     drop_menu.append(image_download)
 
+    const row = document.createElement('div')
+    row.className = 'row'
+    post_body.append(row)
+
+    const author_picture = document.createElement('img')
+    author_picture.id = `post-author-picture-${post.id}`
+    author_picture.className = "img-fluid"
+    author_picture.style.height = "40px"
+    author_picture.src = post.author_picture
+    row.append(author_picture)
+
     const author = document.createElement('div')
     author.className = "card-title"
-    author.id = `post-author-${post.id}`
+    author.id = `post-author`
     author.innerHTML = post.author_username
-    post_body.append(author)
+    row.append(author)
 
     author.addEventListener('click', () => show_profile(post.author_id))
 
@@ -173,11 +184,17 @@ function show_profile(author_id) {
     load_posts(`?profile=${author_id}`)
     document.querySelector('#newPost').style.display = "none"
     document.querySelector('#profile').style.display = "block"
+    document.getElementById('profile_edit').style.display = "none"
     fetch(`profile/${author_id}`)
     .then(response => response.json())
     .then(response => {
+        if (response.editable) {
+            document.getElementById('profile_edit').style.display = "unset"            
+        }
         document.querySelector('#profile_username').innerHTML = response.profile_username
-        document.querySelector('#profile_rating').innerHTML = response.profile_rating
+        document.getElementById('profile_image').src = response.profile_picture
+        document.getElementById('profile_joined').innerHTML = response.profile_joined
+        document.getElementById('profile_bio').innerHTML = response.profile_bio
 
         console.log(response)
     })
@@ -671,7 +688,6 @@ function edit_comment(comment, post_id) {
         comment_body.append(content)
         comment_body.append(timestamp)
         comment_body.append(likes_row)
-        comment_body.append(edit_button)
     })
 }
 

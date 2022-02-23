@@ -9,8 +9,8 @@
             <div class="card-body">
                 <h5 class="card-title">New Post</h5>
                 <form>
-                    <input type="file" id="image" accept="image/png, image/jpg">
-                    <input type="text" id="description" class="form-control" placeholder="Enter an description...">
+                    <input type="file" id="image" accept="image/png, image/jpg" required>
+                    <input type="text" id="description" class="form-control" placeholder="Enter an description..." required>
                     <input type="submit" class="btn btn-primary" id="new_post">
                 </form>
             </div>
@@ -20,11 +20,16 @@
     <div id="profile">
         <div style="display: flex;">
             <div style="flex: 1">
-                <span id="profile_username"></span>
+                <img id="profile_image">
+                <span id="profile_bio"></span>
             </div>
-            <div style="flex: 1;">
-                <span id="profile_rating"></span>
-                <span>rating</span>
+            <div style="flex: 1">
+                <span id="profile_username"></span>
+                <button id="profile_edit" class="btn btn-primary">Edit profile</button>
+            </div>
+            <div style="flex: 1">
+                <span>Joined at:</span>
+                <span id="profile_joined"></span>
             </div>
         </div>
     </div>
