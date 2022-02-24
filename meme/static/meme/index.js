@@ -308,7 +308,7 @@ function build_comment(comment, post_id) {
     comments.append(comment_card)
 }
 
-function update_comment_like(comment_id, like_amount) {
+function update_comment_like(comment_id) {
     fetch(`comment/${comment_id}/update_like`)
     .then(response => response.json())
     .then(response => {
