@@ -26,7 +26,7 @@ class UserProfile(models.Model):
 class Post(models.Model):
     author = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     image = models.ImageField(null=True)
-    description = models.CharField(max_length=64, null=True, default=None)
+    description = models.CharField(max_length=64, null=True)
     timestamp = models.DateTimeField(default=timezone.now)
     likes = models.ManyToManyField(UserProfile, blank=True, related_name="likes")
     favourites = models.ManyToManyField(UserProfile, related_name="favourites")
@@ -66,9 +66,6 @@ class Comment(models.Model):
             "removable": self.author.user == user
         }
 
-class Image(models.Model):
-    image = models.ImageField()
-
 @receiver(post_save, sender=User)
 def create_user_profile(created, sender, instance, **kwargs):
     if created:
@@ -77,3 +74,4 @@ def create_user_profile(created, sender, instance, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
+    

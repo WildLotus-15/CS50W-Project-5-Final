@@ -90,7 +90,7 @@ function build_post(post) {
     const image_download = document.createElement('a')
     image_download.href = post.image
     image_download.download = post.image
-    image_download.innerHTML = "Download"
+    image_download.innerHTML = "Download image"
     image_download.className = "dropdown-item"
     image_download.id = `post-image-download-${post.id}`
     drop_menu.append(image_download)
@@ -110,7 +110,7 @@ function build_post(post) {
 
     const author = document.createElement('div')
     author.className = "card-title"
-    author.id = `post-author`
+    author.id = `post-author-${post.id}`
     author.innerHTML = post.author_username
     post_body.append(author)
 
