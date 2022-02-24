@@ -193,6 +193,7 @@ function update_favourites(post) {
             document.getElementById(`post-add-favourite-${post.id}`).innerHTML = "Remove From Favourites"
         } else {
             document.getElementById(`post-add-favourite-${post.id}`).innerHTML = "Add To Favourites"
+            window.location.reload()
         }
     })
 }
@@ -332,41 +333,17 @@ function update_comment_like(comment_id, like_amount) {
     .then(response => response.json())
     .then(response => {
         if (response.newLike) {
-            if (document.getElementById(`comment-likes-logo-${comment_id}`)) {
-                document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart-fill.svg"
-            } else {
-                const like_icon = document.getElementById(`post-comments-created-like-logo-${comment_id}`)
-                like_icon.src = "static/chess/heart-fill.svg"
-            }
-        } else {
-            if (document.getElementById(`comment-likes-logo-${comment_id}`)) {
-                document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart.svg"            
-            } else {
-                const like_icon = document.getElementById(`post-comments-created-like-logo-${comment_id}`)
-                like_icon.src = "static/chess/heart.svg"
-            }
+            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart-fill.svg"
+        } else {      
+            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart.svg"
         }
 
         if (response.newAmount == 0) {
-            if (document.getElementById(`comment-likes-amount-${comment_id}`)) {
-                document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "none"
-            } else {
-                like_amount.style.display = "none"
-            }
+            document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "none"
         } else {
-            if (document.getElementById(`comment-likes-amount-${comment_id}`)) {
-                document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "inline"
-            } else {
-                like_amount.style.display = "inline"
-                like_amount.innerHTML = response.newAmount
-            }
+            document.getElementById(`comment-likes-amount-${comment_id}`).style.display = "inline"
         }
-
-        if (document.getElementById(`comment-likes-amount-${comment_id}`)) {
-            document.getElementById(`comment-likes-amount-${comment_id}`).innerHTML = response.newAmount
-        } else {
-            like_amount.innerHTML = response.newAmount
-        }
+        document.getElementById(`comment-likes-amount-${comment_id}`).innerHTML = response.newAmount
     })
 }
 
@@ -441,6 +418,7 @@ function load_comments(post_id) {
         .then(response => {
             if (response.success) {
                 const comments = document.getElementById(`post-comments-${post_id}`)
+                
                 const like_logo = document.createElement('img')
                 like_logo.id = `post-comments-created-like-logo-${response.comment_id}`
                 like_logo.src = "static/chess/heart.svg"
@@ -453,7 +431,7 @@ function load_comments(post_id) {
                     like_amount.style.display = "block"
                 }
 
-                like_logo.addEventListener('click', () => update_comment_like(response.comment_id, like_amount))
+                like_logo.addEventListener('click', () => update_created_comment_like(response.comment_id, like_logo, like_amount))
 
                 const comment_dropdown = document.createElement('div')
                 comment_dropdown.className = "dropdown text-right"
@@ -515,6 +493,26 @@ function load_comments(post_id) {
                 alert("You cant comment!")
             }
         })
+    })
+}
+
+function update_created_comment_like(comment_id, like_logo, like_amount) {
+    fetch(`comment/${comment_id}/update_like`)
+    .then(response => response.json())
+    .then(response => {
+        if (response.newLike) {
+            like_logo.src = "static/chess/heart-fill.svg"
+        } else {
+            like_logo.src = "static/chess/heart.svg"
+        }
+
+        if (response.newAmount == 0) {
+            like_amount.style.display = "none"
+        } else {
+            like_amount.style.display = "inline"
+        }
+
+        like_amount.innerHTML = response.newAmount
     })
 }
 

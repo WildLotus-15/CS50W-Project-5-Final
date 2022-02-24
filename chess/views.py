@@ -20,7 +20,7 @@ def load_posts(request):
     else:
         posts = Post.objects.order_by('-timestamp')
     return JsonResponse({
-        "posts": [post.serialize(request.user) for post in posts]
+        "posts": [post.serialize(request.user) for post in posts],
     }, safe=False)
 
 

@@ -49,7 +49,7 @@ class Post(models.Model):
             "liked": not user.is_anonymous and self in UserProfile.objects.get(user=user).likes.all(),
             "editable": self.author.user == user,
             "removable": self.author.user == user,
-            "favourited": self in UserProfile.objects.get(user=user).favourites.all()
+            "favourited": not user.is_anonymous and self in UserProfile.objects.get(user=user).favourites.all()
         }
         
 class Comment(models.Model):
