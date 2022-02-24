@@ -379,14 +379,7 @@ function load_comments(post_id) {
     post_body.append(hide_button)
 
     hide_button.addEventListener('click', () => {
-        const post_comments = document.getElementById(`post-comments-${post_id}`)
-        const comments = post_comments.childNodes
-        console.log(comments)
-        
-        comments.forEach(comment => {
-            comment.remove()
-        })
-
+        document.getElementById(`post-comments-${post_id}`).style.display = "none" 
         document.getElementById(`post-comments-amount-${post_id}`).style.display = "none" 
         document.getElementById(`post-view-comments-${post_id}`).style.display = "block"
         document.getElementById(`post-comment-hide-button-${post_id}`).remove() 
@@ -418,6 +411,9 @@ function load_comments(post_id) {
         .then(response => {
             if (response.success) {
                 const comments = document.getElementById(`post-comments-${post_id}`)
+                const comments_amount = document.getElementById(`post-view-comments-${post_id}`)
+
+                comments_amount.innerHTML = `Comments ${response.newAmount}`
                 
                 const like_logo = document.createElement('img')
                 like_logo.id = `post-comments-created-like-logo-${response.comment_id}`
@@ -752,6 +748,7 @@ function remove_comment(comment, post_id) {
         document.getElementById(`comment-dropdown-${comment.id}`).remove()
 
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
+        document.getElementById(`post-view-comments-${post_id}`).innerHTML = `Comments ${response.newAmount}`
     })
 }
 
@@ -789,13 +786,14 @@ function remove_created_comment(comment_id, post_id) {
         document.getElementById(`post-comment-created-author-${comment_id}`).remove()
         document.getElementById(`post-comment-created-timestamp-${comment_id}`).remove()
         document.getElementById(`post-comment-created-content-${comment_id}`).remove()
-        document.getElementById(`comment-dropdown-${comment_id}`).remove()
+        document.getElementById(`comment-created-dropdown-${comment_id}`).remove()
         
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
+        document.getElementById(`post-view-comments-${post_id}`).innerHTML = `Comments ${response.newAmount}`
     })
 }
 
-function edit_created_comment(comment_id, post_id, like_logo, like_amount, comment_dropdown) {
+function edit_created_comment(comment_id, post_id, like_logo, like_amount) {
     const content = document.getElementById(`post-comment-created-content-${comment_id}`)
 
     const comment_author = document.getElementById(`post-comment-created-author-${comment_id}`)
