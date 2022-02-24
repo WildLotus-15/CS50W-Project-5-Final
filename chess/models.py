@@ -12,15 +12,11 @@ class User(AbstractUser):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, primary_key=True, related_name="profile", on_delete=models.CASCADE)
-    picture = models.ImageField(null=True, default="profile_default.jpg")
     timestamp = models.DateTimeField(null=True, default=timezone.now)
-    bio = models.TextField(null=True, default="No Bio...")
 
     def serialize(self, user):
         return {
             "profile_id": self.user.id,
-            "profile_picture": self.picture.url,
-            "profile_bio": self.bio,
             "profile_username": self.user.username,
             "profile_joined": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "profile_posts": Post.objects.filter(author=self).count(),
@@ -39,7 +35,6 @@ class Post(models.Model):
         return {
             "id": self.id,
             "author_username": self.author.user.username,
-            "author_picture": self.author.picture.url,
             "author_id": self.author.user.id,
             "image": self.image.url,
             "description": self.description,

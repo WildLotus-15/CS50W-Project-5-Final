@@ -34,9 +34,8 @@ function load_posts(addon) {
 
 function build_post(post) {
     const post_card = document.createElement('div')
-    post_card.className = "card"
+    post_card.className = "card col-sm-6 mx-auto"
     post_card.id = `post-card-${post.id}`
-    post_card.style.width = "18rem"
 
     const image = document.createElement('img')
     image.className = 'card-img-top'
@@ -109,22 +108,11 @@ function build_post(post) {
 
     add_favourite.addEventListener('click', () => update_favourites(post))
 
-    const row = document.createElement('div')
-    row.className = 'row'
-    post_body.append(row)
-
-    const author_picture = document.createElement('img')
-    author_picture.id = `post-author-picture-${post.id}`
-    author_picture.className = "img-fluid"
-    author_picture.style.height = "40px"
-    author_picture.src = post.author_picture
-    row.append(author_picture)
-
     const author = document.createElement('div')
     author.className = "card-title"
     author.id = `post-author`
     author.innerHTML = post.author_username
-    row.append(author)
+    post_body.append(author)
 
     author.addEventListener('click', () => show_profile(post.author_id))
 
@@ -222,20 +210,12 @@ function show_profile(author_id) {
     load_posts(`?profile=${author_id}`)
     document.querySelector('#newPost').style.display = "none"
     document.querySelector('#profile').style.display = "block"
-    const profile_edit_button = document.getElementById('profile_edit')
-    profile_edit_button.style.display = 'none'
     fetch(`profile/${author_id}`)
     .then(response => response.json())
     .then(response => {
         document.querySelector('#profile_username').innerHTML = response.profile_username
-        document.getElementById('profile_image').src = response.profile_picture
         document.getElementById('profile_joined').innerHTML = response.profile_joined
-        document.getElementById('profile_bio').innerHTML = response.profile_bio
         document.getElementById('profile_post_amount').innerHTML = response.profile_posts
-
-        if (response.editable) {
-            profile_edit_button.style.display = 'unset'
-        }
 
         console.log(response)
     })
@@ -355,6 +335,8 @@ function load_comments(post_id) {
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.comments_amount}`
     })
 
+    const post_comments_amount = document.getElementById(`post-comments-amount-${post_id}`)
+
     const view_comments = document.getElementById(`post-view-comments-${post_id}`)
     view_comments.style.display = "none"
 
@@ -362,21 +344,38 @@ function load_comments(post_id) {
 
     document.getElementById(`post-comments-${post_id}`).style.display = "block"
 
-    const comments_amount = document.createElement('div')
-    comments_amount.style.display = "block"
-    comments_amount.id = `post-comments-amount-${post_id}`
-    post_body.append(comments_amount)
+    const first_row = document.createElement('div')
+    first_row.style.display = "flex"
+    post_body.append(first_row)
 
-    const comment_input = document.createElement('input')
-    comment_input.className = "form-control"
-    comment_input.id = `post-comment-input-${post_id}`
-    post_body.append(comment_input)
+    const comments_amount = document.createElement('div')
+    comments_amount.style.display = "flex: 1"
+    comments_amount.id = `post-comments-amount-${post_id}`
+    first_row.append(comments_amount)
 
     const hide_button = document.createElement('button')
     hide_button.innerHTML = "Hide"
     hide_button.className = "btn btn-primary"
+    hide_button.style.display = "flex: 1"
     hide_button.id = `post-comment-hide-button-${post_id}`
-    post_body.append(hide_button)
+    first_row.append(hide_button)
+
+    const row = document.createElement('div')
+    row.style.display = "flex"
+    post_body.append(row)
+
+    const comment_input = document.createElement('input')
+    comment_input.className = "form-control"
+    comment_input.display = "flex: 1"
+    comment_input.id = `post-comment-input-${post_id}`
+    row.append(comment_input)
+
+    const save_button = document.createElement('button')
+    save_button.innerHTML = "Add"
+    save_button.className = "btn btn-primary"
+    comment_input.display = "flex: 1"
+    save_button.id = `post-comment-save-button-${post_id}`
+    row.append(save_button)
 
     hide_button.addEventListener('click', () => {
         document.getElementById(`post-comments-${post_id}`).style.display = "none" 
@@ -384,14 +383,8 @@ function load_comments(post_id) {
         document.getElementById(`post-view-comments-${post_id}`).style.display = "block"
         document.getElementById(`post-comment-hide-button-${post_id}`).remove() 
         document.getElementById(`post-comment-save-button-${post_id}`).remove() 
-        document.getElementById(`post-comment-input-${post_id}`).remove() 
+        document.getElementById(`post-comment-input-${post_id}`).remove()
     })
-
-    const save_button = document.createElement('button')
-    save_button.innerHTML = "Add"
-    save_button.className = "btn btn-primary"
-    save_button.id = `post-comment-save-button-${post_id}`
-    post_body.append(save_button)
 
     save_button.addEventListener("click", () => {
         const comment = document.getElementById(`post-comment-input-${post_id}`).value
@@ -743,8 +736,6 @@ function remove_comment(comment, post_id) {
         document.getElementById(`post-comment-likes-row-${comment.id}`).remove()
         document.getElementById(`post-comment-author-${comment.id}`).remove()
         document.getElementById(`comment-content-${comment.id}`).remove()
-        document.getElementById(`post-comment-edit-${comment.id}`).remove()
-        document.getElementById(`post-comment-remove-${comment.id}`).remove()
         document.getElementById(`comment-dropdown-${comment.id}`).remove()
 
         document.getElementById(`post-comments-amount-${post_id}`).innerHTML = `Comments ${response.newAmount}`
