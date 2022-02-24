@@ -32,7 +32,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'chess',
+    'django_rename_app',
+    'meme',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -126,6 +127,6 @@ MEDIA_URL = '/images/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "chess.User"
+AUTH_USER_MODEL = "meme.User"
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'chess/static/chess/images')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'meme/static/meme/images')
