@@ -78,9 +78,11 @@ styles.css is used for only styling page body. Its declaration is directed to fo
 
 index.js is used to make happen all that functionality I have discribed upwards so full load goes on one file
 
-everything starts after using DOMContentLoaded event listener, first I'm loading all posts which uses fetch call to the url that returns JSON response of all objects from Post class, so then I can use forEach command to build every post from its serialized values returned from array. build post function itself takes post as an input and then accesses its values using dot operator and key name specified after
+everything starts after using DOMContentLoaded event listener, first I'm loading all posts which uses fetch call to the url that returns JSON response of all objects from Post class, so then I can use forEach command to build every post from its serialized values returned from array. build post function itself takes post as an input and then accesses its values using dot operator and key name specified after.
 
 I used bootstrap cards for container because it has responsive behavior. when post image is created I'm setting its src attribute to post.image (in model seriaze function post.image is equal to image url so image will display by its source). drop down menu helped me to have simpler design It stores four links which are responsible for post editing and deleting (Those are feasible if request user matches with post author), image downloading (to make that happen I set its download and href attribute equal to post.image itself and also used re_path with download path in projects root urls.py), adding post into favourites.
+
+To make user access their favorite section where all favourite posts are stored first I am checking if user is signed in if not when he tries to create new post is forced to log in.
 
 To add an post item to user favourites section, update favourite function is being run. It fetches into specified url and in dependence of result of an if statement, post is being added to favourites or removed from it. 
 
@@ -89,3 +91,8 @@ After making changes post content is updated so page refreshing isn't required. 
  
 After adding all contents of the post to the card, post liking functionality kicks in first of all I designed it in a such way that like amount identificator and like logo are on the same line and if like amount is equal to zero it isn't displaying at all. Then using click event listener on like logo with update like function post like is being updated, its response returns new amount and new status so with the use of that resources page reloading isn't required.
 
+In the end every post is having its own comments section, which is populated with comments after clicking on it. To make that happen post id is being sent via fetch call. After getting post instance comments are being filtered based on that post, after recieving that response in JS, comments are appended to post at the bottom. also comment input is being displayed where user can type new comment and then save it. all this proccess runs without requirement of refreshing page. When comment is created its dropdown is being added where are located comment edit and remove links. only its author can use this functionality. also comment has like icon where users can leave their reactions.
+
+create post function first gets all the data that is required to add new post entry to the database and then sends it using fetch call
+
+For post liking defined update like function is being run. After successfull fetch like is added or removed in dependence of resulting if statement and all data that was being returend from response is used to update post state so there will be no requirment for page to refresh. 

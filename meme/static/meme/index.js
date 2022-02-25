@@ -747,7 +747,11 @@ function delete_post(post_id) {
     })
     .then(response => response.json())
     .then(response => {
-        document.getElementById(`post-card-${post_id}`).remove()
+        if (response.success) {
+            document.getElementById(`post-card-${post_id}`).remove()
+        } else {
+            alert("You can't remove this post!")
+        }
     })
 }
 
