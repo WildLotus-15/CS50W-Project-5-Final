@@ -1,8 +1,10 @@
 # CS50W-Project-5-Final
 
 # Distinctiveness
+TODO
 
 # Complexity
+TODO
 
 # models.py
 In the models.py file I have defined User table, which handles the creation of registered users. There are also UserProfile, Post and Comment classes, which has its own serialize functions. UserProfile has OneToOneField relationship to User (only one user can link to only one profile). Post model stores created posts, it has Author with OneToMany relationship linked to UserProfile, ImageField atribute, Text based description, Timestamp with modified format, Likes atribute with ManyToManyField to UserProfile (many user can like many posts), and favourites attribute having many to many relationship to users. (many user can add many posts into their individual "favourite" section of a web page).
@@ -68,5 +70,22 @@ login.html is extending layout file by its title and body containing header, sig
 register.html is extending layout file by its title and body containing header, register form and sign in link. 
 
 # static
-In static folder there is sub directory called "meme/images/", this is the place where are media files are being saved after successfully creating or updating post. also there is svg files that I am using called "heart-fill.svg" "heart.svg" for better like styling purposes.
+In static folder there is sub directory called "meme/images/", this is the place where are media files are being saved after successfully creating or updating post.
+
+Also there are svg files that I am using called "heart-fill.svg" and "heart.svg" for better like icon styling purposes.
+
 styles.css is used for only styling page body. Its declaration is directed to font-family and font-size properties who's values are "sans-serif" and "x-large".
+
+index.js is used to make happen all that functionality I have discribed upwards so full load goes on one file
+
+everything starts after using DOMContentLoaded event listener, first I'm loading all posts which uses fetch call to the url that returns JSON response of all objects from Post class, so then I can use forEach command to build every post from its serialized values returned from array. build post function itself takes post as an input and then accesses its values using dot operator and key name specified after
+
+I used bootstrap cards for container because it has responsive behavior. when post image is created I'm setting its src attribute to post.image (in model seriaze function post.image is equal to image url so image will display by its source). drop down menu helped me to have simpler design It stores four links which are responsible for post editing and deleting (Those are feasible if request user matches with post author), image downloading (to make that happen I set its download and href attribute equal to post.image itself and also used re_path with download path in projects root urls.py), adding post into favourites.
+
+To add an post item to user favourites section, update favourite function is being run. It fetches into specified url and in dependence of result of an if statement, post is being added to favourites or removed from it. 
+
+After making sure that post author matches with requested user post can be edited or deleted. one uses PUT request method and second one DELETE. To update post, post id is required with new description and new image provided. I tried to populate new image file field value with existing image but I only could set it equal to an emtpy string.
+After making changes post content is updated so page refreshing isn't required. delete post simply sends post id which is used to get that post instance which we want to delete, after that back end data manipulation on the front end post card is being deleted so changes are applied on client side automatically.  
+ 
+After adding all contents of the post to the card, post liking functionality kicks in first of all I designed it in a such way that like amount identificator and like logo are on the same line and if like amount is equal to zero it isn't displaying at all. Then using click event listener on like logo with update like function post like is being updated, its response returns new amount and new status so with the use of that resources page reloading isn't required.
+
