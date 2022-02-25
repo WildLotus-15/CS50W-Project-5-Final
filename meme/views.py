@@ -46,7 +46,7 @@ def update_comment_like(request, comment_id):
 
 
 
-def add_comment(request, post_id):
+def comment(request, post_id):
     if request.method == "POST":
         data = json.loads(request.body)
         comment = data.get("comment")
@@ -57,23 +57,20 @@ def add_comment(request, post_id):
         return JsonResponse({"success": True, "author": request.user.username, "timestamp": newComment.timestamp.strftime("%b %d %Y, %I:%M %p"), "newAmount": Comment.objects.filter(post=post).count(), "comment_id": newComment.id}, status=200)
     elif request.method == "PUT":
         data = json.loads(request.body)
-        action = data.get("action")
-
-        if action == "edit":
-            new_comment = data.get("new_comment")
-            comment_id = data.get("comment_id")
-            comment = Comment.objects.get(pk=comment_id)
-            comment.comment = new_comment
-            comment.save()
-            return JsonResponse({"success": True})
-                
-        elif action == "remove":
-            comment_id = data.get("comment_id")
-            post_id = data.get("post_id")
-            post = Post.objects.get(pk=post_id)
-            comment = Comment.objects.get(pk=comment_id)
-            comment.delete()
-            return JsonResponse({"success": True, "newAmount": Comment.objects.filter(post=post).count()})
+        new_comment = data.get("new_comment")
+        comment_id = data.get("comment_id")
+        comment = Comment.objects.get(pk=comment_id)
+        comment.comment = new_comment
+        comment.save()
+        return JsonResponse({"success": True})
+    elif request.method == "DELETE":
+        data = json.loads(request.body)
+        comment_id = data.get("comment_id")
+        post_id = data.get("post_id")
+        post = Post.objects.get(pk=post_id)
+        comment = Comment.objects.get(pk=comment_id)
+        comment.delete()
+        return JsonResponse({"success": True, "newAmount": Comment.objects.filter(post=post).count()})
 
 
 def update_favourites(request, post_id):
@@ -105,7 +102,7 @@ def comments(request, post_id):
 
 
 def remove_post(request, post_id):
-    if request.method == "PUT":
+    if request.method == "DELETE":
         data = json.loads(request.body)
         post_id = data.get("post_id")
         post = Post.objects.get(pk=post_id)

@@ -77,14 +77,14 @@ function build_post(post) {
 
         drop_menu.append(edit_button)
 
-        const remove_button = document.createElement('a')
-        remove_button.href = "#"
-        remove_button.className = "dropdown-item"
-        remove_button.id = `post-remove-button-${post.id}`
-        remove_button.innerHTML = "Remove"
-        remove_button.addEventListener('click', () => remove_post(post.id))
+        const delete_button = document.createElement('a')
+        delete_button.href = "#"
+        delete_button.className = "dropdown-item"
+        delete_button.id = `post-remove-button-${post.id}`
+        delete_button.innerHTML = "Delete"
+        delete_button.addEventListener('click', () => delete_post(post.id))
 
-        drop_menu.append(remove_button)
+        drop_menu.append(delete_button)
     }
 
     const image_download = document.createElement('a')
@@ -253,14 +253,14 @@ function build_comment(comment, post_id) {
     
         comment_edit.addEventListener('click', () => edit_comment(comment, post_id))    
 
-        const comment_remove = document.createElement('a')
-        comment_remove.href = "#"
-        comment_remove.className = "dropdown-item"
-        comment_remove.id = `post-comment-remove-${comment.id}`
-        comment_remove.innerHTML = "Remove"
-        comment_dropdown_menu.append(comment_remove)
+        const comment_delete = document.createElement('a')
+        comment_delete.href = "#"
+        comment_delete.className = "dropdown-item"
+        comment_delete.id = `post-comment-remove-${comment.id}`
+        comment_delete.innerHTML = "DELETE"
+        comment_dropdown_menu.append(comment_delete)
 
-        comment_remove.addEventListener('click', () => remove_comment(comment, post_id))
+        comment_delete.addEventListener('click', () => delete_comment(comment, post_id))
     }
 
     const comment_author = document.createElement('div')
@@ -453,7 +453,7 @@ function load_comments(post_id) {
                 comment_remove.innerHTML = "Remove"
                 comment_dropdown_menu.append(comment_remove)
 
-                comment_remove.addEventListener('click', () => remove_created_comment(response.comment_id, post_id, like_amount, like_logo))
+                comment_remove.addEventListener('click', () => delete_created_comment(response.comment_id, post_id, like_amount, like_logo))
 
                 const comment_author = document.createElement('div')
                 comment_author.id = `post-comment-created-author-${response.comment_id}`
@@ -509,12 +509,8 @@ function create_post() {
     const image = document.getElementById('image')
     const description = document.getElementById("description").value
 
-    if (!image.files[0]) {
-        formData.append('description', description)    
-    } else {
-        formData.append('image', image.files[0])
-        formData.append('description', description)            
-    }
+    formData.append('image', image.files[0])
+    formData.append('description', description)            
     
     fetch('create_post', {
         method: "POST",
@@ -677,7 +673,6 @@ function edit_comment(comment, post_id) {
                 "X-CSRFToken": getCookie("csrftoken")
             },
             body: JSON.stringify({
-                "action": "edit",
                 "comment_id": comment.id,
                 "new_comment": new_content
             })
@@ -716,14 +711,13 @@ function edit_comment(comment, post_id) {
     })
 }
 
-function remove_comment(comment, post_id) {
+function delete_comment(comment, post_id) {
     fetch(`post/${post_id}/comment`, {
-        method: "PUT",
+        method: "DELETE",
         headers: {
             'X-CSRFToken': getCookie("csrftoken")
         },
         body: JSON.stringify({
-            "action": "remove",
             "comment_id": comment.id,
             "post_id": post_id
         })
@@ -741,9 +735,9 @@ function remove_comment(comment, post_id) {
     })
 }
 
-function remove_post(post_id) {
+function delete_post(post_id) {
     fetch(`post/${post_id}/remove`, {
-        method: "PUT",
+        method: "DELETE",
         headers: {
             "X-CSRFToken": getCookie("csrftoken")
         },
@@ -757,14 +751,13 @@ function remove_post(post_id) {
     })
 }
 
-function remove_created_comment(comment_id, post_id) {
+function delete_created_comment(comment_id, post_id) {
     fetch(`post/${post_id}/comment`, {
-        method: "PUT",
+        method: "DELETE",
         headers: {
             'X-CSRFToken': getCookie("csrftoken")
         },
         body: JSON.stringify({
-            "action": "remove",
             "comment_id": comment_id,
             "post_id": post_id
         })
