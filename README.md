@@ -4,7 +4,7 @@
 
 # Complexity
 
-# Models
+# models.py
 In the models.py file I have defined User table, which handles the creation of registered users. There are also UserProfile, Post and Comment classes, which has its own serialize functions. UserProfile has OneToOneField relationship to User (only one user can link to only one profile). Post model stores created posts, it has Author with OneToMany relationship linked to UserProfile, ImageField atribute, Text based description, Timestamp with modified format, Likes atribute with ManyToManyField to UserProfile (many user can like many posts), and favourites attribute having many to many relationship to users. (many user can add many posts into their individual "favourite" section of a web page).
 
 Comment class is used to create and store specific comments related to the post, to make that happen Foreign key relationship comes in handy, of course comment is having an Author, Timestamp and Text based comment itself, I have also included Likes field, so user will have the ability to leave a like on comment.
@@ -14,7 +14,7 @@ In the end there is usage of Django signal which is being triggered after user r
 # settings.py
 Besides of the default configuration of the project I added app name in installed apps, AUTH_USER_MODEL (Django uses is it in order to authenticate an user), MEDIA_URL (Which is a way of accessing media files by their url) and MEDIA_ROOT (To store all media files).
 
-# Root urls.py
+# root urls.py
 In the project's root urls.py file I included app urls in default route. With the use of re_path and specified path User can download Image Files, following code on line 29 (extending urlpatterns) gives an ability to access an actual image with its url so then I can access them and then display it on the index page.
 
 # views.py
@@ -51,3 +51,14 @@ logout view simply logs out currently signed in user and then redirecting it on 
 register function handles user registration. First it is getting all data that was being sent via post request form: username, email, password, confimation. Then it is making sure that password and confirmation values mathces (If not, message is being returned informing that). Then it creates user with gathered information and redirects it to index page, after making sure that user doesn't exists with same cradentials in the database (If so message is being returned to notify user). If the intension was to just visit registration page, template is being retured.
 
 # app urls.py
+
+# templates
+layout.html is the base html file which is being extended by all other markup files in django block tags. There is being used bootstrap CSS and JS (jQuery, Popper.js) links in order to make web site more interactive and responsive. Besides that there is included navigation bar to make things more comforable to user by allowing visiting any section quickly.
+
+index.html is extending layout file by its title, body containing: newPost div which has form responsible of making new posts, profile div which by default is not displaying and contains information about profile, posts div place where are posts displayed, and script linking to JS file. 
+
+login.html is extending layout file by its title and body containing header, sign in form and register link. 
+
+register.html is extending layout file by its title and body containing header, register form and sign in link. 
+
+# static
