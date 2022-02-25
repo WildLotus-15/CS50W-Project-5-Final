@@ -51,6 +51,12 @@ logout view simply logs out currently signed in user and then redirecting it on 
 register function handles user registration. First it is getting all data that was being sent via post request form: username, email, password, confimation. Then it is making sure that password and confirmation values mathces (If not, message is being returned informing that). Then it creates user with gathered information and redirects it to index page, after making sure that user doesn't exists with same cradentials in the database (If so message is being returned to notify user). If the intension was to just visit registration page, template is being retured.
 
 # app urls.py
+there are stored urlpatterns for an application which are related to functionality like:
+1. viewing: index, login, logout, register, profile, favourites pages. 
+2. creating: posts, comments.
+3. updating: favourites section, comment, post, comment like, post like.
+4. deleting: post, comment, item from favourites section.
+5. accessing: comments related to specific posts. 
 
 # templates
 layout.html is the base html file which is being extended by all other markup files in django block tags. There is being used bootstrap CSS and JS (jQuery, Popper.js) links in order to make web site more interactive and responsive. Besides that there is included navigation bar to make things more comforable to user by allowing visiting any section quickly.
@@ -62,3 +68,5 @@ login.html is extending layout file by its title and body containing header, sig
 register.html is extending layout file by its title and body containing header, register form and sign in link. 
 
 # static
+In static folder there is sub directory called "meme/images/", this is the place where are media files are being saved after successfully creating or updating post. also there is svg files that I am using called "heart-fill.svg" "heart.svg" for better like styling purposes.
+styles.css is used for only styling page body. Its declaration is directed to font-family and font-size properties who's values are "sans-serif" and "x-large".

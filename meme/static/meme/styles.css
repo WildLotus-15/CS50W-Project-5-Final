@@ -2,8 +2,3 @@ body {
     font-family: sans-serif;
     font-size: large;
 }
-
-#post-author:hover {
-    cursor: pointer;
-    text-decoration: underline;
-}
