@@ -1,4 +1,29 @@
-# CS50W-Project-5-Final
+# CS50 Final Project - Meme app
+ [CS50 Final Project - Dance App](#cs50-final-project---dance-app)
+  - [Overview](#overview)
+  - [Distinctiveness and Complexity](#distinctiveness-and-complexity)
+  - [Models](#models)
+  - [Routes](#routes)
+    - [Index `/`](#index-)
+    - [Load Posts `/load_posts`](#load-posts-load_posts)
+    - [New Post `/create_post`](#create-post-create_post)
+    - [Edit Post `/post/edit/<int:post_id>`](#edit-post-postint_post_id_edit)
+    - [Remove Post `/post/<int:post_id>/remove>`](#remove-post-postintpost_idremove)
+    - [Comment `/post/<int:post_id>/comment>`](#comment-postintcomment_id)
+    - [Update Comment Like `/comment/<int:comment_id>/update_like>`](#update-comment-like-commentintcomment_idupdate_like)
+    - [Update Comment Like `/comment/<int:comment_id>/update_like>`](#update-comment-like-commentintcomment_idupdate_like)
+    - [Comments `/post/<int:post_id>/comments>`](#comments-postintpost_idcomments)
+    - [Update Favorites `/post/<int:post_id>/update_favorites`](#favorites-load_postsfavorite)
+    - [Favorites `/load_posts/favorite`](#update-favorites-postintpost_idupdate_favorites)
+    - [Profile `/profile/<int:profile_id>`](#profile-profileintprofile_id)
+    - [Login `/login`](#login-login)
+    - [Register `/register`](#register-student-register)
+    - [Logout `/logout`](#logout-logout)
+  - [Files and directories](#files-and-directories)
+  - [How to run the application](#how-to-run-the-application)
+## Overview
+TODO
+My web application was built using Django, JavaScript and Bootstrap
 
 ## Distinctiveness and Complexity
 According the the specification, my project must adhere to the following guidelines:
@@ -6,18 +31,20 @@ According the the specification, my project must adhere to the following guideli
 
 I think my project meets this requirements for following reasons:
 1. the website is entirely feasible with a designed `API`.
-2. Implemented functionalities that other modern-day websites are having such as `creating posts` and `modifying their state`, `leaving the comments with like reactions on them`, and `updating their status`. Also having the ability to `add the post into the individual "favorite" section`.
-3. Also `image uploading and downloading` is the part which satisfied me very much.
+2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section`.
+3. Also image uploading and downloading is the part which satisfied me very much.
  
 ### Complexity
 As for Complexity, I tried to have `user experience` on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like `user favorite section` when a post is being removed, functionality is being chosen over comfort level. Also when a `post is created` page is reloaded to not to make things more difficult.
 
 ## Settings
-Besides the default configuration of the project, I added the `app name` in `installed apps`, `AUTH_USER_MODEL` (Django uses is it to authenticate a user), `MEDIA_URL` (Which is a way of accessing media files by their URL), and `MEDIA_ROOT` (To store all media files).
+Besides the default configuration of the project, I added the included app name `meme` in `installed_apps`, `AUTH_USER_MODEL` (Django uses is it to authenticate a user), `MEDIA_URL` (Which is a way of accessing media files by their URL), and `MEDIA_ROOT` (To store all media files).
+
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
 ## Root Routes
 I included app URL in the project's default root. With the use of `re_path` and specified path, the `User` can download `Image`, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
+
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 ## Models
 There are 4 models for the memes app database:
@@ -29,6 +56,7 @@ There are 4 models for the memes app database:
 Last two classes `Post` and `Comment` are having their own `serialize` functions.  
 
 In the end, there is the usage of the `Django signal` which is being triggered after user registration. First, profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
+
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 ## Routes
 
@@ -78,6 +106,7 @@ logout view simply logs out the currently signed-in user and then redirects it t
 
 ### Register `/register`
 register function handles user registration. First, it is getting all data that was being sent via the post request form: username, email, password, confirmation. Then it is making sure that password and confirmation values match (If not, the message is being returned informing that). Then it creates a user with gathered information and redirects it to the index page, after making sure that the user doesn't exist with the same credentials in the database (If so message is being returned to notify the user). If the intention was to just visit the registration page, the template is being returned.
+
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#distinctiveness-and-complexity)
 ## templates
 ### Layout `/meme/templates/meme/layout.html`
@@ -90,7 +119,8 @@ index.html is extending layout file by its title, a body containing: new post di
 login.html is extending the layout file by its title and body containing a header, sign-in form, and register link. 
 
 ### Register `/meme/templates/meme/register.html` 
-register.html is extending the layout file by its title and body containing a header, register form, and sign-in link. 
+register.html is extending the layout file by its title and body containing a header, register form, and sign-in link.
+
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 ## static
 In the static folder, there is a subdirectory called "meme/images/", this is the place where are media files are being saved after successfully creating or updating a post.
@@ -133,4 +163,5 @@ pagination function is responsible for changing the page we want to access, so i
 3. Run "python manage.py makemigrations meme" to make migrations for the meme app.
 4. Run "python manage.py migrate" to apply migrations to your database.
 5. Chect "requirements.txt" file to download required Python packages.
+6. 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
