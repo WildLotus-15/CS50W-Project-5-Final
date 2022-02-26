@@ -1,8 +1,10 @@
 # CS50W-Project-5-Final
 
-# Distinctiveness and Compolexity
+# Distinctiveness and Complexity
 As for originality, the most distinctive part about my application is that the website is entirely feasible with a designed API (Meaning back-end logic and front-end appearance). Also image uploading and downloading is the part which satisfied me very much, along with other the functionalities that other modern-day websites are having like creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section.   
 As for Complexity, I tried to have user experience on the highest level, this is manifested in the fact that in most actions page reloading isn't required. But in some places like (user favorite section) when a post is being removed, functionality is being chosen over comfort level so the page is reloaded. Also when a post is created page is reloaded to not to make things more difficult.
+
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
 # How to run
 1. Clone the repository.
@@ -11,20 +13,29 @@ As for Complexity, I tried to have user experience on the highest level, this is
 4. Run "python manage.py migrate" to apply migrations to your database.
 5. Chect "requirements.txt" file to download required Python packages.
 
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
+
 # models.py
 There are 4 models for the memes app database:
-1. > User - Stores and handels the creation of registered users.
-In the models.py file, I have defined a User table, which handles the creation of registered users. There are also UserProfile, Post, and Comment classes, which have their own serialize functions. UserProfile has an OneToOneField relationship to User (only one user can link to only one profile). Post model stores created posts, it has an Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users. (many users can add many posts into their individual "favorite" section of a web page).
+1. User - Stores and handels the creation of registered users.
+2. UserProfile - Creates OneToOne relationship with User, has timestamp to identicate the creation date.
+3. Post - Stores created posts, it has an Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users (many users can add many posts into their individual "favorite" section of a web page).
+4. Comment - Stores created comments related to the Post, to make that happen Foreign key relationship comes in handy, of course, the comment is having an Author, Timestamp and Text-based comment itself. I have also included Likes field, so the user will have the ability to leave a like on the comment.
 
-Comment class is used to store created comments related to the post, to make that happen Foreign key relationship comes in handy, of course, the comment is having an Author, Timestamp and Text-based comment itself, I have also included Likes field, so the user will have the ability to leave a like on the comment.
+Last two classes Post and Comment are having their own serialize functions.  
 
-In the end, there is the usage of the Django signal which is being triggered after user registration. First, I create a profile based on the user instance and then save it in the database. (As a result, when the user is registered, its profile is created automatically).
+In the end, there is the usage of the Django signal which is being triggered after user registration. First, profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
+
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
 # settings.py
 Besides the default configuration of the project, I added the app name in installed apps, AUTH_USER_MODEL (Django uses is it to authenticate a user), MEDIA_URL (Which is a way of accessing media files by their URL), and MEDIA_ROOT (To store all media files).
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
 # root urls.py
 I included app URLs in the project's root urls.py file in the default route. With the use of re_path and specified path, the User can download Image Files, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
+
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
 # views.py
 index function just returns index template
@@ -59,6 +70,8 @@ logout view simply logs out the currently signed-in user and then redirects it t
 
 register function handles user registration. First, it is getting all data that was being sent via the post request form: username, email, password, confirmation. Then it is making sure that password and confirmation values match (If not, the message is being returned informing that). Then it creates a user with gathered information and redirects it to the index page, after making sure that the user doesn't exist with the same credentials in the database (If so message is being returned to notify the user). If the intention was to just visit the registration page, the template is being returned.
 
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#distinctiveness-and-complexity)
+
 # app urls.py
 there are stored URL patterns for an application that are related to functionality like:
 1. viewing: index, login, logout, register, profile, favorites pages. 
@@ -67,6 +80,7 @@ there are stored URL patterns for an application that are related to functionali
 4. deleting: post, comment, the item from favorites section.
 5. accessing: comments related to specific posts. 
 
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 # templates
 layout.html is the base HTML file that is being extended by all other markup files in Django block tags. There is being used bootstrap CSS and JS (jQuery, Popper.js) links to make the website more interactive and responsive. Besides that, there is included navigation bar to make things more comfortable to the user by allowing visiting any section quickly.
 
@@ -76,6 +90,7 @@ login.html is extending the layout file by its title and body containing a heade
 
 register.html is extending the layout file by its title and body containing a header, register form, and sign-in link. 
 
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 # static
 In the static folder, there is a subdirectory called "meme/images/", this is the place where are media files are being saved after successfully creating or updating a post.
 
@@ -109,3 +124,5 @@ For post liking defined update like function is being run. After successful fetc
 The user profile is being shown when clicking on post author username (by default first page of paginator is displayed), this process is feasible by fetching into profile URL with specified profile id. When unhiding profile with including data from response new post form disappears. In contrast to all posts page profile page only shows posts related to the profile which is being displayed.
 
 pagination function is responsible for changing the page we want to access, so if the user will click on the "previous" button previous page will be loaded and vice versa if the user clicks on the "next" button next page will be displayed. besides these two buttons the user can click on any page he wants if it is possible.
+
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
