@@ -4,17 +4,17 @@
 TODO
 
 # Complexity
-As for Complexity, I tried to have user experince on the highest level, this is manifested in the fact that, in the most actions page reloading isn't required. But in some places like (user favourite section) when post is being removed, functionality is being choosen over comfort level so page is reloaded. Also when post is created page is reloaded in order to not to make things more difficult. 
+As for Complexity, I tried to have user experience on the highest level, this is manifested in the fact that in most actions page reloading isn't required. But in some places like (user favorite section) when a post is being removed, functionality is being chosen over comfort level so the page is reloaded. Also when a post is created page is reloaded to not to make things more difficult. 
 
 # models.py
-In the models.py file, I have defined a User table, which handles the creation of registered users. There are also UserProfile, Post, and Comment classes, which have their own serialize functions. UserProfile has an OneToOneField relationship to User (only one user can link to only one profile). Post model stores created posts, it has Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users. (many users can add many posts into their individual "favorite" section of a web page).
+In the models.py file, I have defined a User table, which handles the creation of registered users. There are also UserProfile, Post, and Comment classes, which have their own serialize functions. UserProfile has an OneToOneField relationship to User (only one user can link to only one profile). Post model stores created posts, it has an Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users. (many users can add many posts into their individual "favorite" section of a web page).
 
 Comment class is used to store created comments related to the post, to make that happen Foreign key relationship comes in handy, of course, the comment is having an Author, Timestamp and Text-based comment itself, I have also included Likes field, so the user will have the ability to leave a like on the comment.
 
 In the end, there is the usage of the Django signal which is being triggered after user registration. First, I create a profile based on the user instance and then save it in the database. (As a result, when the user is registered, its profile is created automatically).
 
 # settings.py
-Besides of the default configuration of the project, I added the app name in installed apps, AUTH_USER_MODEL (Django uses is it to authenticate a user), MEDIA_URL (Which is a way of accessing media files by their URL), and MEDIA_ROOT (To store all media files).
+Besides the default configuration of the project, I added the app name in installed apps, AUTH_USER_MODEL (Django uses is it to authenticate a user), MEDIA_URL (Which is a way of accessing media files by their URL), and MEDIA_ROOT (To store all media files).
 
 # root urls.py
 I included app URLs in the project's root urls.py file in the default route. With the use of re_path and specified path, the User can download Image Files, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
@@ -22,9 +22,9 @@ I included app URLs in the project's root urls.py file in the default route. Wit
 # views.py
 index function just returns index template
 
-load posts function returns a JSON response. By setting the safe parameter's value to True I am allowing non-dictionary objects to be serialized from the Post model class.
+load posts function returns a JSON response. By setting the safe parameter's value to True I am allowing non-dictionary objects to be serialized from the Post model class. Also, I'm using the Djangos Paginator class to split the queryset into page objects and then using JS to implement pagination functionality.
 
-create post function handles post creation logic. After checking the request method I'm getting all data that has been sent via JS FormData(), after processing it, the post is being saved and a success message is being returned.  
+create post function handles post creation logic. After checking the request method I'm getting all data that has been sent via JS FormData(). After processing it, the post is being saved and a success message is being returned.  
 
 edit post function allows post author to update its contents, after getting all data that was submitted via JS FormData() old post values
 are being replaced be with new ones. After updating the post, a new image URL is being returned so I can display updated content without requiring refreshing the page.
@@ -40,7 +40,7 @@ update like function updates post like (adds it or removes it after running if-e
 
 comments function returns all the comments in relation to a specific post using serializer function by first getting post id and then using it to filter existing comments also I am returning the amount of it just for visualizing.
 
-favorites function returns all favorite posts in relation to the requested user by serializing them
+The favorites function returns all favorite posts in relation to the requested user by serializing paginated page objects.
 
 update favorites function updates requested user’s individual favorites section, by adding a post item to it or removing it, after passing some if-else statements. It also returns a new favorite variable so the user will know if the post is in their favorites or not.
 
@@ -78,7 +78,7 @@ styles.css is used for only styling page body. Its declaration is directed to fo
 
 index.js is used to make happen all that functionality I have described upwards so full load goes on one file
 
-everything starts after using DOMContentLoaded event listener, first I'm loading all posts which uses fetch call to the URL that returns JSON response of all objects from Post-class, so then I can use JS for each command to build every post from its serialized values returned from the array. build post function itself takes a post as an input and then accesses its values using dot operator and key name specified after.
+everything starts after using DOMContentLoaded event listener, first I'm loading all posts which uses fetch call to the URL that returns JSON response of all objects from Post-class (by default first page of paginator is displayed), so then I can use JS for each command to build every post from its serialized values returned from the array. build post function itself takes a post as an input and then accesses its values using dot operator and key name specified after.
 
 I used bootstrap cards for the container because it has responsive behavior. when a post image is created I'm setting its src attribute to post.image (in model serialize function post.image is equal to image URL so the image will display by its source). The drop-down menu helped me to have a simpler design. It stores four links which are responsible for post-editing and deleting (Those are feasible if request user matches with post author), image downloading (to make that happen I set its download and href attribute equal to post.image itself and also used re_path with download path in projects root urls.py), adding post into favorites.
 
@@ -101,3 +101,4 @@ For post liking defined update like function is being run. After successful fetc
 
 The user profile is being shown when clicking on post author username, this process is feasible by fetching into profile URL with specified profile id. When unhiding profile with including data from response new post form disappears. In contrast to all posts page profile page only shows posts related to the profile which is being displayed.
 
+pagination function is responsible for changing the page we want to access, so if the user will click on the "previous" button previous page will be loaded and vice versa if the user clicks on the "next" button next page will be displayed. besides these two buttons the user can click on any page he wants if it is possible.
