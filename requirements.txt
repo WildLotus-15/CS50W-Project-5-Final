@@ -1,1 +1,1 @@
-Install Pillow package with the commant: "pip3 install pillow" being run in the terminal. (It is a package that Python uses to process images)
+In your terminal, run "pip3 install pillow" to install the Pillow package that Python uses to process images.
