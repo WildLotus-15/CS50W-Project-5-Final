@@ -1,7 +1,7 @@
 # CS50W-Project-5-Final
 
 # Distinctiveness
-TODO
+As for originality, the most distinctive part about my application is that the website is entirely feasible with a designed API (Meaning back-end logic and front-end appearance). Also image uploading and downloading is the part which satisfied me very much, along with other the functionalities that other modern-day websites are having like creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section.   
 
 # Complexity
 As for Complexity, I tried to have user experience on the highest level, this is manifested in the fact that in most actions page reloading isn't required. But in some places like (user favorite section) when a post is being removed, functionality is being chosen over comfort level so the page is reloaded. Also when a post is created page is reloaded to not to make things more difficult. 
@@ -99,6 +99,6 @@ create post function first gets all the data that is required to add a new post 
 
 For post liking defined update like function is being run. After successful fetch like is added or removed in dependence of resulting if statement and all data that was being returned from the response is used to update post-state so there will be no requirement for the page to refresh. if a post likes amount is equal to zero it will not be displayed
 
-The user profile is being shown when clicking on post author username, this process is feasible by fetching into profile URL with specified profile id. When unhiding profile with including data from response new post form disappears. In contrast to all posts page profile page only shows posts related to the profile which is being displayed.
+The user profile is being shown when clicking on post author username (by default first page of paginator is displayed), this process is feasible by fetching into profile URL with specified profile id. When unhiding profile with including data from response new post form disappears. In contrast to all posts page profile page only shows posts related to the profile which is being displayed.
 
 pagination function is responsible for changing the page we want to access, so if the user will click on the "previous" button previous page will be loaded and vice versa if the user clicks on the "next" button next page will be displayed. besides these two buttons the user can click on any page he wants if it is possible.
