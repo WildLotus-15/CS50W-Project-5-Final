@@ -25,57 +25,73 @@ As for Complexity, I tried to have user experience on the highest level this is 
 
 ## models.py
 There are 4 models for the memes app database:
-1. <code class="language-plaintext highlighter-rouge">User</code>- Stores and handels the creation of registered users.
-2. <code class="language-plaintext highlighter-rouge">UserProfile</code> - Creates OneToOne relationship with User, has timestamp to identicate the creation date.
-3. <code class="language-plaintext highlighter-rouge">Post</code>- Stores created posts, it has an Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users (many users can add many posts into their individual "favorite" section of a web page).
-4. <code class="language-plaintext highlighter-rouge">Comment</code>- Stores created comments related to the Post, to make that happen Foreign key relationship comes in handy, of course, the comment is having an Author, Timestamp and Text-based comment itself. I have also included Likes field, so the user will have the ability to leave a like on the comment.
+1. `User` - Stores and handels the creation of registered users.
+2. `UserProfile` - Creates `OneToOne` relationship with `User`, has `timestamp` to identicate the creation date.
+3. `Post` - Stores created posts, it has an `author` with `Foreign key` relationship linked to `UserProfile`, `ImageField` attribute, text-based `description`, `timestamp` with the modified format, `likes` attribute with `ManyToManyField` to `UserProfile` (many users can like many posts), and `favorites` attribute having `ManyToMany` relationship to users (many users can add many posts into their individual `"favorite"` section of a web page).
+4. `Comment` - Stores created comments related to the `Post`, to make that happen `Foreign key` relationship comes in handy, of course, the comment is having an `author`, `timestamp` and text-based `comment` itself. I have also included `likes` field, so the user will have the ability to leave a like on the comment.
 
-Last two classes <code class="language-plaintext highlighter-rouge">Post</code> and <code class="language-plaintext highlighter-rouge">Comment</code> are having their own serialize functions.  
+Last two classes `Post` and `Comment` are having their own `serialize` functions.  
 
-In the end, there is the usage of the Django signal which is being triggered after user registration. First, profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
+In the end, there is the usage of the `Django signal` which is being triggered after user registration. First, profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
 ## settings.py
-Besides the default configuration of the project, I added the app name in installed apps, AUTH_USER_MODEL (Django uses is it to authenticate a user), MEDIA_URL (Which is a way of accessing media files by their URL), and MEDIA_ROOT (To store all media files).
+Besides the default configuration of the project, I added the `app name` in `installed apps`, `AUTH_USER_MODEL` (Django uses is it to authenticate a user), `MEDIA_URL` (Which is a way of accessing media files by their URL), and `MEDIA_ROOT` (To store all media files).
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
 ## root urls.py
-I included app URLs in the project's root urls.py file in the default route. With the use of re_path and specified path, the User can download Image Files, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
+I included app URL in the project's default root. With the use of `re_path` and specified path, the `User` can download `Image`, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
-## views.py
+## Routes
+
+### Index `/`
 index function just returns index template
 
+### Load posts `/load_posts`
 load posts function returns a JSON response. By setting the safe parameter's value to True I am allowing non-dictionary objects to be serialized from the Post model class. Also, I'm using the Djangos Paginator class to split the queryset into page objects and then using JS to implement pagination functionality.
 
+### Create post `/create_post`
 create post function handles post creation logic. After checking the request method I'm getting all data that has been sent via JS FormData(). After processing it, the post is being saved and a success message is being returned.  
 
+### Edit post `/post/<int_post_id:>edit`
 edit post function allows post author to update its contents, after getting all data that was submitted via JS FormData() old post values
 are being replaced be with new ones. After updating the post, a new image URL is being returned so I can display updated content without requiring refreshing the page.
 
+### Remove post `/post/<int:post_id>/remove`
 remove post function simply removes the post. 
 
-add comment function handles comment adding, editing, and removing. If the intention was to create a comment it is being saved after getting all required data: comment content and post id (to set relationship between), after this process JSON response is being returned populated with the comment itself so it will be added automatically to the page. if comment edit is being called, after getting all required data comment content is getting replaced with a new one. Else if the desire was to remove the comment simply logic will execute comment removing after getting the required comment id.
+### Comment `/post/<int:comment_id>`  
+comment function handles comment adding, editing, and removing. If the intention was to create a comment it is being saved after getting all required data: comment content and post id (to set relationship between), after this process JSON response is being returned populated with the comment itself so it will be added automatically to the page. if comment edit is being called, after getting all required data comment content is getting replaced with a new one. Else if the desire was to remove the comment simply logic will execute comment removing after getting the required comment id.
 
+### Update Comment Like `/comment/<int:comment_id>/update_like`
 update comment like function updates specific comment like (adds it or removes after passing if statement) then it returns a JSON response with the new status and new amount
 to modify existing comment details so refreshing the page and getting new data wouldn't be required.
 
+### Update Post Like `/post/<int:post_id/update_like>`
 update like function updates post like (adds it or removes it after running if-else conditions). Then it returns a JSON response just as an update comment like to modify existing post details dynamically.
 
+### Comments `/post/<int:post_id>/comments`
 comments function returns all the comments in relation to a specific post using serializer function by first getting post id and then using it to filter existing comments also I am returning the amount of it just for visualizing.
 
+### Favorites `/load_posts/favorite`
 The favorites function returns all favorite posts in relation to the requested user by serializing paginated page objects.
 
+### Update Favorites `/post/<int:post_id>/update_favorites`
 update favorites function updates requested user’s individual favorites section, by adding a post item to it or removing it, after passing some if-else statements. It also returns a new favorite variable so the user will know if the post is in their favorites or not.
 
+### Profile `/profile/<int:profile_id>`
 profile function returns a specific serialized profile in relation to what pk value of it was sent from client-side
 
+### Login `/login`
 login view handles user sign-in functionality. First, it is getting all required values to make that happen, username, and password that was been sent via the post request form. If a user with that inputted credentials exists in the database user is being authenticated and redirected to the index page. Else if there were sent invalid credentials, the message is being returned indicating that state. If the user just visits the login page template is being rendered.
 
+### Logout `/logout`
 logout view simply logs out the currently signed-in user and then redirects it to the index page.
 
+### Register `/register`
 register function handles user registration. First, it is getting all data that was being sent via the post request form: username, email, password, confirmation. Then it is making sure that password and confirmation values match (If not, the message is being returned informing that). Then it creates a user with gathered information and redirects it to the index page, after making sure that the user doesn't exist with the same credentials in the database (If so message is being returned to notify the user). If the intention was to just visit the registration page, the template is being returned.
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#distinctiveness-and-complexity)
