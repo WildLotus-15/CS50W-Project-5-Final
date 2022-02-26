@@ -1,12 +1,20 @@
 # CS50W-Project-5-Final
 
-# Distinctiveness and Complexity
-As for originality, the most distinctive part about my application is that the website is entirely feasible with a designed API (Meaning back-end logic and front-end appearance). Also image uploading and downloading is the part which satisfied me very much, along with other the functionalities that other modern-day websites are having like creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section.   
-As for Complexity, I tried to have user experience on the highest level, this is manifested in the fact that in most actions page reloading isn't required. But in some places like (user favorite section) when a post is being removed, functionality is being chosen over comfort level so the page is reloaded. Also when a post is created page is reloaded to not to make things more difficult.
+## Distinctiveness and Complexity
+According the the specification, my project must adhere to the following guidelines:
+> Your web application must be sufficiently distinct from the other projects in this course (and, in addition, may not be based on the old CS50W Pizza project), and more complex than those.
+
+I think my project meets this requirements for following reasons:
+1. the website is entirely feasible with a designed API.
+2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section.
+3. Also image uploading and downloading is the part which satisfied me very much, along with other the functionalities that other modern-day websites 
+ 
+### Complexity
+As for Complexity, I tried to have user experience on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like (user favorite section) when a post is being removed, functionality is being chosen over comfort level. Also when a post is created page is reloaded to not to make things more difficult.
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
-# How to run
+## How to run
 1. Clone the repository.
 2. In your terminal "cd" into project5 directory.
 3. Run "python manage.py makemigrations meme" to make migrations for the meme app.
@@ -15,7 +23,7 @@ As for Complexity, I tried to have user experience on the highest level, this is
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
-# models.py
+## models.py
 There are 4 models for the memes app database:
 1. User - Stores and handels the creation of registered users.
 2. UserProfile - Creates OneToOne relationship with User, has timestamp to identicate the creation date.
@@ -28,16 +36,16 @@ In the end, there is the usage of the Django signal which is being triggered aft
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
-# settings.py
+## settings.py
 Besides the default configuration of the project, I added the app name in installed apps, AUTH_USER_MODEL (Django uses is it to authenticate a user), MEDIA_URL (Which is a way of accessing media files by their URL), and MEDIA_ROOT (To store all media files).
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
-# root urls.py
+## root urls.py
 I included app URLs in the project's root urls.py file in the default route. With the use of re_path and specified path, the User can download Image Files, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
-# views.py
+## views.py
 index function just returns index template
 
 load posts function returns a JSON response. By setting the safe parameter's value to True I am allowing non-dictionary objects to be serialized from the Post model class. Also, I'm using the Djangos Paginator class to split the queryset into page objects and then using JS to implement pagination functionality.
@@ -72,7 +80,7 @@ register function handles user registration. First, it is getting all data that 
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#distinctiveness-and-complexity)
 
-# app urls.py
+## app urls.py
 there are stored URL patterns for an application that are related to functionality like:
 1. viewing: index, login, logout, register, profile, favorites pages. 
 2. creating: posts, and comments.
@@ -81,7 +89,7 @@ there are stored URL patterns for an application that are related to functionali
 5. accessing: comments related to specific posts. 
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
-# templates
+## templates
 layout.html is the base HTML file that is being extended by all other markup files in Django block tags. There is being used bootstrap CSS and JS (jQuery, Popper.js) links to make the website more interactive and responsive. Besides that, there is included navigation bar to make things more comfortable to the user by allowing visiting any section quickly.
 
 index.html is extending layout file by its title, a body containing: new post div which has form responsible for making new posts, profile div which by default is not displaying and contains the profile information, posts div place where are posts displayed, and script linking to JS file. 
@@ -91,7 +99,7 @@ login.html is extending the layout file by its title and body containing a heade
 register.html is extending the layout file by its title and body containing a header, register form, and sign-in link. 
 
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
-# static
+## static
 In the static folder, there is a subdirectory called "meme/images/", this is the place where are media files are being saved after successfully creating or updating a post.
 
 Also, there are SVG files that I am using called "heart-fill.svg" and "heart.svg" for better like icon styling purposes.
