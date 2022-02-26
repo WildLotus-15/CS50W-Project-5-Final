@@ -25,12 +25,12 @@ As for Complexity, I tried to have user experience on the highest level this is 
 
 ## models.py
 There are 4 models for the memes app database:
-1. User - Stores and handels the creation of registered users.
-2. UserProfile - Creates OneToOne relationship with User, has timestamp to identicate the creation date.
-3. Post - Stores created posts, it has an Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users (many users can add many posts into their individual "favorite" section of a web page).
-4. Comment - Stores created comments related to the Post, to make that happen Foreign key relationship comes in handy, of course, the comment is having an Author, Timestamp and Text-based comment itself. I have also included Likes field, so the user will have the ability to leave a like on the comment.
+1. <code class="language-plaintext highlighter-rouge">User</code>- Stores and handels the creation of registered users.
+2. <code class="language-plaintext highlighter-rouge">UserProfile</code> - Creates OneToOne relationship with User, has timestamp to identicate the creation date.
+3. <code class="language-plaintext highlighter-rouge">Post</code>- Stores created posts, it has an Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users (many users can add many posts into their individual "favorite" section of a web page).
+4. <code class="language-plaintext highlighter-rouge">Comment</code>- Stores created comments related to the Post, to make that happen Foreign key relationship comes in handy, of course, the comment is having an Author, Timestamp and Text-based comment itself. I have also included Likes field, so the user will have the ability to leave a like on the comment.
 
-Last two classes Post and Comment are having their own serialize functions.  
+Last two classes <code class="language-plaintext highlighter-rouge">Post</code> and <code class="language-plaintext highlighter-rouge">Comment</code> are having their own serialize functions.  
 
 In the end, there is the usage of the Django signal which is being triggered after user registration. First, profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
 
