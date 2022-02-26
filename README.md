@@ -25,6 +25,8 @@
 TODO
 My web application was built using Django, JavaScript and Bootstrap
 
+[Back to Top](#cs50-final-project---meme-app)
+
 ## Distinctiveness and Complexity
 According the the specification, my project must adhere to the following guidelines:
 > Your web application must be sufficiently distinct from the other projects in this course (and, in addition, may not be based on the old CS50W Pizza project), and more complex than those.
@@ -33,19 +35,23 @@ I think my project meets this requirements for following reasons:
 1. the website is entirely feasible with a designed `API`.
 2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section`.
 3. Also image uploading and downloading is the part which satisfied me very much.
+
+[Back to Top](#cs50-final-project---meme-app)
  
 ### Complexity
 As for Complexity, I tried to have `user experience` on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like `user favorite section` when a post is being removed, functionality is being chosen over comfort level. Also when a `post is created` page is reloaded to not to make things more difficult.
 
+[Back to Top](#cs50-final-project---meme-app)
+
 ## Settings
 Besides the default configuration of the project, I added the included app name `meme` in `installed_apps`, `AUTH_USER_MODEL` (Django uses is it to authenticate a user), `MEDIA_URL` (Which is a way of accessing media files by their URL), and `MEDIA_ROOT` (To store all media files).
 
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
+[Back to Top](#cs50-final-project---meme-app)
 
 ## Root Routes
 I included app URL in the project's default root. With the use of `re_path` and specified path, the `User` can download `Image`, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
 
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
+[Back to Top](#cs50-final-project---meme-app)
 ## Models
 There are 4 models for the memes app database:
 1. `User` - Stores and handels the creation of registered users.
@@ -57,7 +63,7 @@ Last two classes `Post` and `Comment` are having their own `serialize` functions
 
 In the end, there is the usage of the `Django signal` which is being triggered after user registration. First, profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
 
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
+[Back to Top](#cs50-final-project---meme-app)
 ## Routes
 
 ### Index `/`
@@ -107,7 +113,7 @@ logout view simply logs out the currently signed-in user and then redirects it t
 ### Register `/register`
 register function handles user registration. First, it is getting all data that was being sent via the post request form: username, email, password, confirmation. Then it is making sure that password and confirmation values match (If not, the message is being returned informing that). Then it creates a user with gathered information and redirects it to the index page, after making sure that the user doesn't exist with the same credentials in the database (If so message is being returned to notify the user). If the intention was to just visit the registration page, the template is being returned.
 
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#distinctiveness-and-complexity)
+[Back to Top](#cs50-final-project---meme-app)
 ## templates
 ### Layout `/meme/templates/meme/layout.html`
 layout.html is the base HTML file that is being extended by all other markup files in Django block tags. There is being used bootstrap CSS and JS (jQuery, Popper.js) links to make the website more interactive and responsive. Besides that, there is included navigation bar to make things more comfortable to the user by allowing visiting any section quickly.
@@ -121,14 +127,8 @@ login.html is extending the layout file by its title and body containing a heade
 ### Register `/meme/templates/meme/register.html` 
 register.html is extending the layout file by its title and body containing a header, register form, and sign-in link.
 
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
+[Back to Top](#cs50-final-project---meme-app)
 ## static
-In the static folder, there is a subdirectory called "meme/images/", this is the place where are media files are being saved after successfully creating or updating a post.
-
-Also, there are SVG files that I am using called "heart-fill.svg" and "heart.svg" for better like icon styling purposes.
-
-styles.css is used for only styling page body. Its declaration is directed to font-family and font-size properties whose values are "sans-serif" and "x-large".
-
 index.js is used to make happen all that functionality I have described upwards so full load goes on one file
 
 everything starts after using DOMContentLoaded event listener, first I'm loading all posts which uses fetch call to the URL that returns JSON response of all objects from Post-class (by default first page of paginator is displayed), so then I can use JS for each command to build every post from its serialized values returned from the array. build post function itself takes a post as an input and then accesses its values using dot operator and key name specified after.
@@ -156,12 +156,43 @@ The user profile is being shown when clicking on post author username (by defaul
 
 pagination function is responsible for changing the page we want to access, so if the user will click on the "previous" button previous page will be loaded and vice versa if the user clicks on the "next" button next page will be displayed. besides these two buttons the user can click on any page he wants if it is possible.
 
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
+[Back to Top](cs50-final-project---meme-app)
+
+## Files and directories
+Summary of created files:
+- `meme` - main application directory.
+  - `static/meme` contains all static content.
+    - `/images/` place where all media files are being saved.
+    - `heart-fill.svg` & `heart.svg` for better like icon styling purposes.
+    - `styles.css` styles.css is used for only styling page body. Its declaration is directed to font-family and font-size properties whose values are "sans-serif" and "x-large".
+    - `index.js` - all JavaScript files used in project.
+  - `templates/meme` contains all application templates.
+    - `index.html` - template for [Index](#index-) (homepage) which displays all posts.
+    - `layout.html` - base template. All other templates extend it.
+    - `login.html` - template for [Login](#login-login) page.
+    - `register.html` - template for [Login](#register-register) page.
+  - `__init__.py` - generated by Django.
+  - `admin.py` - used to determine models which will be used in the Django Admin Interface.
+  - `apps.py` - generated by Django.
+  - `models.py` defines the models used to add to and update the database using Django.
+  - `tests.py` - generated by Django.
+  - `urls.py` - defines all application URLs.
+  - `views.py` - contains all application views.
+- `project5` - project directory
+  - `__init__.py`
+  - `asgi.py` - generated by Django
+  - `settings.py` - generated by Django, also contains logic for messages.
+  - `urls.py` - contains project URLs.
+  - `wsgi.py` - generated by Django.
+- `db.sqlite3` - database
+- `manage.py` - generated by Django.
+- `requirements.txt` - packages required for the application to run successfully.
+
 ## How to run the application
 1. Clone the repository.
-2. In your terminal "cd" into project5 directory.
-3. Run "python manage.py makemigrations meme" to make migrations for the meme app.
-4. Run "python manage.py migrate" to apply migrations to your database.
-5. Chect "requirements.txt" file to download required Python packages.
-6. 
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
+2. In your terminal `cd` into project5 directory.
+3. Run `python manage.py makemigrations meme` to make migrations for the meme app.
+4. Run `python manage.py migrate` to apply migrations to your database.
+5. Chect `requirements.txt` file to download required Python packages.
+
+[Back to Top](cs50-final-project---meme-app)
