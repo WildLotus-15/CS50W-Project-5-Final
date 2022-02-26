@@ -15,7 +15,7 @@ def index(request):
 
 
 def load_posts(request):
-    profile = request.GET.get("profile")
+    profile = request.GET.get("profile", None)
     if (profile):
         posts = Post.objects.filter(author=profile).order_by('-timestamp')
         paginator = Paginator(posts, 10)
@@ -93,8 +93,11 @@ def update_favorites(request, post_id):
 
 def favorites(request):
     posts = request.user.profile.favorites.all()
+    paginator = Paginator(posts, 10)
+    page_obj = paginator.get_page(request.GET.get("page"))
     return JsonResponse({
-        "posts": [post.serialize(request.user) for post in posts]
+        "posts": [post.serialize(request.user) for post in page_obj],
+        "num_pages": paginator.num_pages
     }, safe=False)
 
 

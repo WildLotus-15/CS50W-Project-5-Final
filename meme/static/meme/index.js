@@ -263,7 +263,7 @@ function update_like(post_id) {
 }
 
 function show_profile(author_id) {
-    load_posts(`?profile=${author_id}`)
+    load_posts(`?profile=${author_id}`, 1)
     document.querySelector('#newPost').style.display = "none"
     document.querySelector('#profile').style.display = "block"
     fetch(`profile/${author_id}`)
@@ -274,6 +274,8 @@ function show_profile(author_id) {
         document.getElementById('profile_post_amount').innerHTML = response.profile_posts
 
         console.log(response)
+
+        window.scrollTo(0, 0)
     })
 }
 

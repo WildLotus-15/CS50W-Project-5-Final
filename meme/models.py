@@ -20,7 +20,6 @@ class UserProfile(models.Model):
             "profile_username": self.user.username,
             "profile_joined": self.timestamp.strftime("%b %d %Y, %I:%M %p"),
             "profile_posts": Post.objects.filter(author=self).count(),
-            "editable": self.user == user
         }
 
 class Post(models.Model):

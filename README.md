@@ -4,7 +4,7 @@
 TODO
 
 # Complexity
-TODO
+As for Complexity, I tried to have user experince on the highest level, this is manifested in the fact that, in the most actions page reloading isn't required. But in some places like (user favourite section) when post is being removed, functionality is being choosen over comfort level so page is reloaded. Also when post is created page is reloaded in order to not to make things more difficult. 
 
 # models.py
 In the models.py file, I have defined a User table, which handles the creation of registered users. There are also UserProfile, Post, and Comment classes, which have their own serialize functions. UserProfile has an OneToOneField relationship to User (only one user can link to only one profile). Post model stores created posts, it has Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users. (many users can add many posts into their individual "favorite" section of a web page).
@@ -100,3 +100,4 @@ create post function first gets all the data that is required to add a new post 
 For post liking defined update like function is being run. After successful fetch like is added or removed in dependence of resulting if statement and all data that was being returned from the response is used to update post-state so there will be no requirement for the page to refresh. if a post likes amount is equal to zero it will not be displayed
 
 The user profile is being shown when clicking on post author username, this process is feasible by fetching into profile URL with specified profile id. When unhiding profile with including data from response new post form disappears. In contrast to all posts page profile page only shows posts related to the profile which is being displayed.
+
