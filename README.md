@@ -5,25 +5,21 @@ According the the specification, my project must adhere to the following guideli
 > Your web application must be sufficiently distinct from the other projects in this course (and, in addition, may not be based on the old CS50W Pizza project), and more complex than those.
 
 I think my project meets this requirements for following reasons:
-1. the website is entirely feasible with a designed API.
-2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section.
-3. Also image uploading and downloading is the part which satisfied me very much, along with other the functionalities that other modern-day websites 
+1. the website is entirely feasible with a designed `API`.
+2. Implemented functionalities that other modern-day websites are having such as `creating posts` and `modifying their state`, `leaving the comments with like reactions on them`, and `updating their status`. Also having the ability to `add the post into the individual "favorite" section`.
+3. Also `image uploading and downloading` is the part which satisfied me very much.
  
 ### Complexity
-As for Complexity, I tried to have user experience on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like (user favorite section) when a post is being removed, functionality is being chosen over comfort level. Also when a post is created page is reloaded to not to make things more difficult.
+As for Complexity, I tried to have `user experience` on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like `user favorite section` when a post is being removed, functionality is being chosen over comfort level. Also when a `post is created` page is reloaded to not to make things more difficult.
 
+## Settings
+Besides the default configuration of the project, I added the `app name` in `installed apps`, `AUTH_USER_MODEL` (Django uses is it to authenticate a user), `MEDIA_URL` (Which is a way of accessing media files by their URL), and `MEDIA_ROOT` (To store all media files).
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 
-## How to run
-1. Clone the repository.
-2. In your terminal "cd" into project5 directory.
-3. Run "python manage.py makemigrations meme" to make migrations for the meme app.
-4. Run "python manage.py migrate" to apply migrations to your database.
-5. Chect "requirements.txt" file to download required Python packages.
-
+## Root Routes
+I included app URL in the project's default root. With the use of `re_path` and specified path, the `User` can download `Image`, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
-
-## models.py
+## Models
 There are 4 models for the memes app database:
 1. `User` - Stores and handels the creation of registered users.
 2. `UserProfile` - Creates `OneToOne` relationship with `User`, has `timestamp` to identicate the creation date.
@@ -33,18 +29,7 @@ There are 4 models for the memes app database:
 Last two classes `Post` and `Comment` are having their own `serialize` functions.  
 
 In the end, there is the usage of the `Django signal` which is being triggered after user registration. First, profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
-
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
-
-## settings.py
-Besides the default configuration of the project, I added the `app name` in `installed apps`, `AUTH_USER_MODEL` (Django uses is it to authenticate a user), `MEDIA_URL` (Which is a way of accessing media files by their URL), and `MEDIA_ROOT` (To store all media files).
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
-
-## root urls.py
-I included app URL in the project's default root. With the use of `re_path` and specified path, the `User` can download `Image`, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
-
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
-
 ## Routes
 
 ### Index `/`
@@ -56,7 +41,7 @@ load posts function returns a JSON response. By setting the safe parameter's val
 ### Create post `/create_post`
 create post function handles post creation logic. After checking the request method I'm getting all data that has been sent via JS FormData(). After processing it, the post is being saved and a success message is being returned.  
 
-### Edit post `/post/<int_post_id:>edit`
+### Edit post `/post/<int_post_id:>/edit`
 edit post function allows post author to update its contents, after getting all data that was submitted via JS FormData() old post values
 are being replaced be with new ones. After updating the post, a new image URL is being returned so I can display updated content without requiring refreshing the page.
 
@@ -93,27 +78,19 @@ logout view simply logs out the currently signed-in user and then redirects it t
 
 ### Register `/register`
 register function handles user registration. First, it is getting all data that was being sent via the post request form: username, email, password, confirmation. Then it is making sure that password and confirmation values match (If not, the message is being returned informing that). Then it creates a user with gathered information and redirects it to the index page, after making sure that the user doesn't exist with the same credentials in the database (If so message is being returned to notify the user). If the intention was to just visit the registration page, the template is being returned.
-
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#distinctiveness-and-complexity)
-
-## app urls.py
-there are stored URL patterns for an application that are related to functionality like:
-1. viewing: index, login, logout, register, profile, favorites pages. 
-2. creating: posts, and comments.
-3. updating: favorites section, comment, post, comment like, and post like.
-4. deleting: post, comment, the item from favorites section.
-5. accessing: comments related to specific posts. 
-
-[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 ## templates
+### Layout `/meme/templates/meme/layout.html`
 layout.html is the base HTML file that is being extended by all other markup files in Django block tags. There is being used bootstrap CSS and JS (jQuery, Popper.js) links to make the website more interactive and responsive. Besides that, there is included navigation bar to make things more comfortable to the user by allowing visiting any section quickly.
 
+### Index `/meme/templates/meme/index.html`
 index.html is extending layout file by its title, a body containing: new post div which has form responsible for making new posts, profile div which by default is not displaying and contains the profile information, posts div place where are posts displayed, and script linking to JS file. 
 
+### Login `/meme/templates/meme/login.html`
 login.html is extending the layout file by its title and body containing a header, sign-in form, and register link. 
 
+### Register `/meme/templates/meme/register.html` 
 register.html is extending the layout file by its title and body containing a header, register form, and sign-in link. 
-
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
 ## static
 In the static folder, there is a subdirectory called "meme/images/", this is the place where are media files are being saved after successfully creating or updating a post.
@@ -149,4 +126,11 @@ The user profile is being shown when clicking on post author username (by defaul
 
 pagination function is responsible for changing the page we want to access, so if the user will click on the "previous" button previous page will be loaded and vice versa if the user clicks on the "next" button next page will be displayed. besides these two buttons the user can click on any page he wants if it is possible.
 
+[Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
+## How to run the application
+1. Clone the repository.
+2. In your terminal "cd" into project5 directory.
+3. Run "python manage.py makemigrations meme" to make migrations for the meme app.
+4. Run "python manage.py migrate" to apply migrations to your database.
+5. Chect "requirements.txt" file to download required Python packages.
 [Back to Top](https://github.com/WildLotus-15/CS50W-Project-5-Final#cs50w-project-5-final)
