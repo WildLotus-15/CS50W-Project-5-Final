@@ -4,7 +4,13 @@
 As for originality, the most distinctive part about my application is that the website is entirely feasible with a designed API (Meaning back-end logic and front-end appearance). Also image uploading and downloading is the part which satisfied me very much, along with other the functionalities that other modern-day websites are having like creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section.   
 
 # Complexity
-As for Complexity, I tried to have user experience on the highest level, this is manifested in the fact that in most actions page reloading isn't required. But in some places like (user favorite section) when a post is being removed, functionality is being chosen over comfort level so the page is reloaded. Also when a post is created page is reloaded to not to make things more difficult. 
+As for Complexity, I tried to have user experience on the highest level, this is manifested in the fact that in most actions page reloading isn't required. But in some places like (user favorite section) when a post is being removed, functionality is being chosen over comfort level so the page is reloaded. Also when a post is created page is reloaded to not to make things more difficult.
+
+# How to run
+1. Clone the repository.
+2. In your terminal "cd" into project5 directory.
+3. Run "python manage.py makemigrations meme" to make migrations for the meme app.
+4. Run "python manage.py migrate" to apply migrations to your database.
 
 # models.py
 In the models.py file, I have defined a User table, which handles the creation of registered users. There are also UserProfile, Post, and Comment classes, which have their own serialize functions. UserProfile has an OneToOneField relationship to User (only one user can link to only one profile). Post model stores created posts, it has an Author with OneToMany relationship linked to UserProfile, ImageField attribute, Text-based description, Timestamp with the modified format, Likes attribute with ManyToManyField to UserProfile (many users can like many posts), and favorites attribute having many to many relationship to users. (many users can add many posts into their individual "favorite" section of a web page).
