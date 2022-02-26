@@ -9,7 +9,7 @@ urlpatterns = [
     path("register", views.register, name="register"),
     path("profile/<int:profile_id>", views.profile, name="profile"),
     path("load_posts", views.load_posts, name="load_posts"),
-    path("load_posts/favourite", views.favourites, name="load_favoutire_posts"),
+    path("load_posts/favorite", views.favorites, name="load_favorite_posts"),
     path("create_post", views.create_post, name="create_post"),
     path("post/<int:post_id>/comment", views.comment, name="comment"),
     path("post/<int:post_id>/comments", views.comments, name="comments"),
@@ -17,5 +17,5 @@ urlpatterns = [
     path("comment/<int:comment_id>/update_like", views.update_comment_like, name="update_comment_like"),
     path("post/<int:post_id>/remove", views.remove_post, name="remove_post"),
     path("post/<int:post_id>/edit", views.edit_post, name="edit_post"),
-    path("post/<int:post_id>/update_favourites", views.update_favourites, name="update_favourites")
+    path("post/<int:post_id>/update_favorites", views.update_favorites, name="update_favorites")
 ]

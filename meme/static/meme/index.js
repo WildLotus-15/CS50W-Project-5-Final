@@ -1,11 +1,13 @@
 document.addEventListener("DOMContentLoaded", () => {
-    load_posts("")
+    document.querySelector('#profile').style.display = 'none'
 
-    if (document.getElementById('favourite')) {
-        document.getElementById('favourite').addEventListener('click', () => load_posts('/favourite'))
+    if (document.getElementById('favorite')) {
+        document.getElementById('favorite').addEventListener('click', () => load_posts('/favorite'))
     } else {
         document.getElementById(`newPost`).addEventListener('click', () => force_login())
     }
+
+    load_posts("", 1)
 
     document.querySelector('form').onsubmit = create_post
 })
@@ -14,22 +16,76 @@ function force_login() {
     document.getElementById('login').click()
 }
 
-function load_posts(addon) {
+function load_posts(addon, page) {
     if (addon.includes('?')) {
-        addon += ''
+        addon += `&page=${page}`
     } else if (addon.includes('/')) {
         document.querySelector("#newPost").style.display = 'none'
+        addon += `?page=${page}`
     } else {
         document.querySelector('#profile').style.display = "none"
+        addon += `?page=${page}`
     }
     fetch(`load_posts${addon}`)
     .then(response => response.json())
     .then(response => {
         document.querySelector('#posts').innerHTML = ''
         response.posts.forEach(post => build_post(post))
+        build_paginator(addon, page, response.num_pages);
 
         console.log(response.posts)
     })
+}
+
+function build_paginator(addon, page, num_pages) {
+    page_list = document.getElementById('pagination')
+    page_list.innerHTML = ""
+
+    const previous = document.createElement('li')
+    if(page == 1){
+        previous.className = "page-item disabled"    
+    } else {
+        previous.className = "page-item"    
+        previous.addEventListener('click', () => load_posts(addon, page-1));
+    }        
+    const page_a_previous = document.createElement('a')
+    page_a_previous.className = "page-link"
+
+    page_a_previous.href = "#"
+    page_a_previous.innerHTML = "Previous"
+    previous.append(page_a_previous)   
+    page_list.append(previous)
+    
+    for (let item = 1; item <= num_pages; item++) {
+        const page_icon = document.createElement('li')  
+        if(item == page) {
+            page_icon.className = "page-item active"
+        } else {
+            page_icon.className = "page-item"
+            page_icon.addEventListener('click', () => load_posts(addon, item))
+        }        
+        const page_a = document.createElement('a')
+        page_a.className = "page-link"
+        page_a.href = "#"
+        page_a.innerHTML = item
+        page_icon.append(page_a)
+
+        page_list.append(page_icon)
+    }
+    
+    const next = document.createElement('li')        
+    if (page == num_pages){
+        next.className = "page-item disabled"    
+    } else {
+        next.className = "page-item"    
+        next.addEventListener('click', () => load_posts(addon, page+1))
+    }   
+    const page_a_next = document.createElement('a')
+    page_a_next.className = "page-link"
+    page_a_next.href = "#"
+    page_a_next.innerHTML = "Next"
+    next.append(page_a_next)
+    page_list.append(next)
 }
 
 function build_post(post) {
@@ -98,15 +154,15 @@ function build_post(post) {
     const add_favourite = document.createElement('a')
     add_favourite.href = "#"
     add_favourite.className = "dropdown-item"
-    if (post.favourited) {
-        add_favourite.innerHTML = "Remove From Favourites"
+    if (post.favorited) {
+        add_favourite.innerHTML = "Remove From Favorites"
     } else {
-        add_favourite.innerHTML = "Add To Favourites"
+        add_favourite.innerHTML = "Add To Favorites"
     }
-    add_favourite.id = `post-add-favourite-${post.id}`
+    add_favourite.id = `post-add-favorite-${post.id}`
     drop_menu.append(add_favourite)
 
-    add_favourite.addEventListener('click', () => update_favourites(post))
+    add_favourite.addEventListener('click', () => update_favorites(post))
 
     const author = document.createElement('div')
     author.className = "card-title"
@@ -134,9 +190,9 @@ function build_post(post) {
 
     const likes_logo = document.createElement('img')
     if (post.liked) {
-        likes_logo.src = "static/chess/heart-fill.svg"
+        likes_logo.src = "static/meme/heart-fill.svg"
     } else {
-        likes_logo.src = "static/chess/heart.svg"
+        likes_logo.src = "static/meme/heart.svg"
     }
     likes_logo.id = `post-likes-logo-${post.id}`
     likes_row.append(likes_logo)
@@ -173,14 +229,14 @@ function build_post(post) {
     document.querySelector("#posts").append(post_card)
 }
 
-function update_favourites(post) {
-    fetch(`post/${post.id}/update_favourites`)
+function update_favorites(post) {
+    fetch(`post/${post.id}/update_favorites`)
     .then(response => response.json())
     .then(response => {
-        if (response.newFavourite) {
-            document.getElementById(`post-add-favourite-${post.id}`).innerHTML = "Remove From Favourites"
+        if (response.newFavorite) {
+            document.getElementById(`post-add-favorite-${post.id}`).innerHTML = "Remove From Favorites"
         } else {
-            document.getElementById(`post-add-favourite-${post.id}`).innerHTML = "Add To Favourites"
+            document.getElementById(`post-add-favorite-${post.id}`).innerHTML = "Add To Favorites"
             window.location.reload()
         }
     })
@@ -191,9 +247,9 @@ function update_like(post_id) {
     .then(response => response.json())
     .then(response => {
         if (response.newLike) {
-            document.getElementById(`post-likes-logo-${post_id}`).src = `static/chess/heart-fill.svg`
+            document.getElementById(`post-likes-logo-${post_id}`).src = `static/meme/heart-fill.svg`
             } else {
-            document.getElementById(`post-likes-logo-${post_id}`).src = 'static/chess/heart.svg'
+            document.getElementById(`post-likes-logo-${post_id}`).src = 'static/meme/heart.svg'
         }
 
         if (response.newAmount == 0) {
@@ -285,9 +341,9 @@ function build_comment(comment, post_id) {
 
     const likes_logo = document.createElement('img')
     if (comment.liked) {
-        likes_logo.src = "static/chess/heart-fill.svg" 
+        likes_logo.src = "static/meme/heart-fill.svg" 
     } else {
-        likes_logo.src = "static/chess/heart.svg"
+        likes_logo.src = "static/meme/heart.svg"
     }
     likes_logo.id = `comment-likes-logo-${comment.id}`
     likes_row.append(likes_logo)
@@ -313,9 +369,9 @@ function update_comment_like(comment_id) {
     .then(response => response.json())
     .then(response => {
         if (response.newLike) {
-            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart-fill.svg"
+            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/meme/heart-fill.svg"
         } else {      
-            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/chess/heart.svg"
+            document.getElementById(`comment-likes-logo-${comment_id}`).src = "static/meme/heart.svg"
         }
 
         if (response.newAmount == 0) {
@@ -408,7 +464,7 @@ function load_comments(post_id) {
                 
                 const like_logo = document.createElement('img')
                 like_logo.id = `post-comments-created-like-logo-${response.comment_id}`
-                like_logo.src = "static/chess/heart.svg"
+                like_logo.src = "static/meme/heart.svg"
 
                 const like_amount = document.createElement('div')
                 like_amount.id = `post-comments-created-amount-${response.comment_id}`
@@ -488,9 +544,9 @@ function update_created_comment_like(comment_id, like_logo, like_amount) {
     .then(response => response.json())
     .then(response => {
         if (response.newLike) {
-            like_logo.src = "static/chess/heart-fill.svg"
+            like_logo.src = "static/meme/heart-fill.svg"
         } else {
-            like_logo.src = "static/chess/heart.svg"
+            like_logo.src = "static/meme/heart.svg"
         }
 
         if (response.newAmount == 0) {

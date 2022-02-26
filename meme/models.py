@@ -29,7 +29,7 @@ class Post(models.Model):
     description = models.CharField(max_length=64, null=True)
     timestamp = models.DateTimeField(default=timezone.now)
     likes = models.ManyToManyField(UserProfile, blank=True, related_name="likes")
-    favourites = models.ManyToManyField(UserProfile, related_name="favourites")
+    favorites = models.ManyToManyField(UserProfile, related_name="favorites")
 
     def serialize(self, user):
         return {
@@ -44,7 +44,7 @@ class Post(models.Model):
             "liked": not user.is_anonymous and self in UserProfile.objects.get(user=user).likes.all(),
             "editable": self.author.user == user,
             "removable": self.author.user == user,
-            "favourited": not user.is_anonymous and self in UserProfile.objects.get(user=user).favourites.all()
+            "favorited": not user.is_anonymous and self in UserProfile.objects.get(user=user).favorites.all()
         }
         
 class Comment(models.Model):

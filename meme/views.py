@@ -7,6 +7,8 @@ from django.contrib.auth import login, logout, authenticate
 
 from meme.models import Post, User, UserProfile, Comment
 
+from django.core.paginator import Paginator
+
 # Create your views here.
 def index(request):
     return render(request, "meme/index.html")
@@ -15,11 +17,16 @@ def index(request):
 def load_posts(request):
     profile = request.GET.get("profile")
     if (profile):
-        posts = Post.objects.filter(author=profile)
+        posts = Post.objects.filter(author=profile).order_by('-timestamp')
+        paginator = Paginator(posts, 10)
+        page_obj = paginator.get_page(request.GET.get("page"))
     else:
         posts = Post.objects.order_by('-timestamp')
+        paginator = Paginator(posts, 10)
+        page_obj = paginator.get_page(request.GET.get("page"))
     return JsonResponse({
-        "posts": [post.serialize(request.user) for post in posts],
+        "posts": [post.serialize(request.user) for post in page_obj],
+        "num_pages": paginator.num_pages
     }, safe=False)
 
 
@@ -73,19 +80,19 @@ def comment(request, post_id):
         return JsonResponse({"success": True, "newAmount": Comment.objects.filter(post=post).count()})
 
 
-def update_favourites(request, post_id):
+def update_favorites(request, post_id):
     post = Post.objects.get(pk=post_id)
-    if request.user.profile in post.favourites.all():
-        post.favourites.remove(request.user.profile)
+    if request.user.profile in post.favorites.all():
+        post.favorites.remove(request.user.profile)
         newStatus = False
     else:
-        post.favourites.add(request.user.profile)
+        post.favorites.add(request.user.profile)
         newStatus = True
-    return JsonResponse({"newFavourite": newStatus})
+    return JsonResponse({"newFavorite": newStatus})
 
 
-def favourites(request):
-    posts = request.user.profile.favourites.all()
+def favorites(request):
+    posts = request.user.profile.favorites.all()
     return JsonResponse({
         "posts": [post.serialize(request.user) for post in posts]
     }, safe=False)
