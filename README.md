@@ -1,5 +1,5 @@
 # CS50 Final Project - Meme app
- [CS50 Final Project - Dance App](#cs50-final-project---dance-app)
+[CS50 Final Project - Meme App](#cs50-final-project--meme-app)
   - [Overview](#overview)
   - [Distinctiveness and Complexity](#distinctiveness-and-complexity)
   - [Models](#models)
@@ -22,24 +22,29 @@
   - [Files and directories](#files-and-directories)
   - [How to run the application](#how-to-run-the-application)
 ## Overview
-TODO
-My web application was built using Django, JavaScript and Bootstrap
+I have built a meme uploading platform, where everyone can create meme posts and comments. The website has lots of different features, which is summarised below
+[Routes](#routes))
+
+The web application was built using Django, JavaScript, and Bootstrap.
 
 [Back to Top](#cs50-final-project---meme-app)
 
 ## Distinctiveness and Complexity
-According the the specification, my project must adhere to the following guidelines:
+According to the specification, my project must adhere to the following guidelines:
 > Your web application must be sufficiently distinct from the other projects in this course (and, in addition, may not be based on the old CS50W Pizza project), and more complex than those.
 
-I think my project meets this requirements for following reasons:
-1. the website is entirely feasible with a designed `API`.
+I think my project meets these requirements for the following reasons:
+1. the website is entirely feasible and functional with a designed `API`.
 2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section`.
 3. Also image uploading and downloading is the part which satisfied me very much.
-
+> Your web application must utilize Django (including at least one model) on the back-end and JavaScript on the front-end.
+My application was built using Django, including 4 models, and uses 1 JavaScript script to make dynamic updates. All generated information is saved in the default project generated sqlite3 database.
+> Your web application must be mobile-responsive
+Every page and feature of the web application is mobile-responsive and this is achieved using Bootstrap CSS.
 [Back to Top](#cs50-final-project---meme-app)
  
 ### Complexity
-As for Complexity, I tried to have `user experience` on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like `user favorite section` when a post is being removed, functionality is being chosen over comfort level. Also when a `post is created` page is reloaded to not to make things more difficult.
+As for Complexity, I tried to have `user experience` on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like the `user favorite section` when a post is being removed, functionality is being chosen over comfort level. Also when a `post is created` page is reloaded to not make things more difficult.
 
 [Back to Top](#cs50-final-project---meme-app)
 
@@ -49,19 +54,19 @@ Besides the default configuration of the project, I added the included app name 
 [Back to Top](#cs50-final-project---meme-app)
 
 ## Root Routes
-I included app URL in the project's default root. With the use of `re_path` and specified path, the `User` can download `Image`, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
+I included the app URL in the project's default root. With the use of `re_path` and specified path, the `User` can download `Image`, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
 
 [Back to Top](#cs50-final-project---meme-app)
 ## Models
 There are 4 models for the memes app database:
-1. `User` - Stores and handels the creation of registered users.
+1. `User` - Stores and handles the creation of registered users.
 2. `UserProfile` - Creates `OneToOne` relationship with `User`, has `timestamp` to identicate the creation date.
 3. `Post` - Stores created posts, it has an `author` with `Foreign key` relationship linked to `UserProfile`, `ImageField` attribute, text-based `description`, `timestamp` with the modified format, `likes` attribute with `ManyToManyField` to `UserProfile` (many users can like many posts), and `favorites` attribute having `ManyToMany` relationship to users (many users can add many posts into their individual `"favorite"` section of a web page).
-4. `Comment` - Stores created comments related to the `Post`, to make that happen `Foreign key` relationship comes in handy, of course, the comment is having an `author`, `timestamp` and text-based `comment` itself. I have also included `likes` field, so the user will have the ability to leave a like on the comment.
+4. `Comment` - Stores created comments related to the `Post`, to make that happen `Foreign key` relationship comes in handy, of course, the comment is having an `author`, `timestamp` and text-based `comment` itself. I have also included the `likes` field, so the user will have the ability to leave a like on the comment.
 
-Last two classes `Post` and `Comment` are having their own `serialize` functions.  
+The last two classes `Post` and `Comment` are having their own `serialize` functions.  
 
-In the end, there is the usage of the `Django signal` which is being triggered after user registration. First, profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
+In the end, there is the usage of the `Django signal` which is being triggered after user registration. First, the profile is being created based on the user instance and then saved in the database. (As a result, when the user is registered, its profile is created automatically).
 
 [Back to Top](#cs50-final-project---meme-app)
 ## Routes
@@ -83,7 +88,7 @@ are being replaced be with new ones. After updating the post, a new image URL is
 remove post function simply removes the post. 
 
 ### Comment `/post/<int:comment_id>`  
-comment function handles comment adding, editing, and removing. If the intention was to create a comment it is being saved after getting all required data: comment content and post id (to set relationship between), after this process JSON response is being returned populated with the comment itself so it will be added automatically to the page. if comment edit is being called, after getting all required data comment content is getting replaced with a new one. Else if the desire was to remove the comment simply logic will execute comment removing after getting the required comment id.
+comment function handles comment adding, editing and removing. If the intention was to create a comment it is being saved after getting all required data: comment content and post id (to set relationship between), after this process JSON response is being returned populated with the comment itself so it will be added automatically to the page. if comment edit is being called, after getting all required data comment content is getting replaced with a new one. Else if the desire was to remove the comment simply logic will execute comment removing after getting the required comment id.
 
 ### Update Comment Like `/comment/<int:comment_id>/update_like`
 update comment like function updates specific comment like (adds it or removes after passing if statement) then it returns a JSON response with the new status and new amount
@@ -177,7 +182,7 @@ Summary of created files:
     - `/images/` place where all media files are being saved.
     - `heart-fill.svg` & `heart.svg` for better like icon styling purposes.
     - `styles.css` styles.css is used for only styling page body. Its declaration is directed to font-family and font-size properties whose values are "sans-serif" and "x-large".
-    - `index.js` - single JavaScript file used in project [Index.js](#indexjs).
+    - `index.js` - single JavaScript file used in project [Index.js](#indexjs-memestaticmemeindexjs).
   - `templates/meme` contains all application templates.
     - `index.html` - template for [Index](#index-) (homepage) which displays all posts.
     - `layout.html` - base template. All other templates extend it.
@@ -207,6 +212,6 @@ Summary of created files:
 2. In your terminal `cd` into project5 directory.
 3. Run `python manage.py makemigrations meme` to make migrations for the meme app.
 4. Run `python manage.py migrate` to apply migrations to your database.
-5. Chect `requirements.txt` file to download required Python packages.
+5. Check `requirements.txt` file to download required Python packages.
 
 [Back to Top](cs50-final-project---meme-app)
