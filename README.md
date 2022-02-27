@@ -161,7 +161,7 @@ register.html is extending the layout file by its title and body containing a he
 index.js is used to make happen all that functionality I have described upwards so full load goes on one file.
 
 ### Create post
-create post function first gets all the data that is required to add a new post entry to the database and then sends it using fetch call
+create post function first gets all the data that is required to add a new post entry to the database and then sends it using fetch call on [this URL](#create-post-create_post)
 
 ### Pagination
 pagination function is responsible for changing the page we want to access, so if the user will click on the "previous" button previous page will be loaded and vice versa if the user clicks on the "next" button next page will be displayed. besides these two buttons the user can click on any page he wants if it is possible.
@@ -173,29 +173,29 @@ everything starts after using DOMContentLoaded event listener, first I'm loading
 I used bootstrap cards for the container because it has responsive behavior. when a post image is created I'm setting its src attribute to post.image (in model serialize function post.image is equal to image URL so the image will display by its source). The drop-down menu helped me to have a simpler design. It stores four links which are responsible for post-[editing](#updating-post) and [deleting](#updating-post) (Those are feasible if request user matches with post author), image downloading (to make that happen I set its download and href attribute equal to post.image itself and also used re_path with download path in projects root urls.py), [adding post into favorites](#updating-favorites).
 
 ### Updating post
-After making sure that the post author matches with the requested user post can be edited or deleted. one uses the PUT request method and the second one DELETE. To update the post, a post id is required with a new description and a new image provided. I tried to populate a new image file field value with the existing image but I only could set it equal to an empty string.
+After making sure that the post author matches with the requested user post can be edited or deleted via fetching into this. one uses the PUT request method and the second one DELETE. To update the post, a post id is required with a new description and a new image provided. I tried to populate a new image file field value with the existing image but I only could set it equal to an empty string.
 After making changes post content is updated so page refreshing isn't required. delete post simply sends post id which is used to get that post instance which we want to delete, after that back end data manipulation on the front end postcard is being deleted so changes are applied on client-side automatically.
 
 ### Updating post like 
-After adding all contents of the post to the card, post liking functionality kicks in. First of all, I designed it in a such way that like amount identificator and like logo are on the same line and if the like amount is equal to zero it isn't displaying at all. Then using click event listener on the like logo with an update like function post like is being updated, its response returns new amount and new status so with the use of that resources page reloading isn't required.
+After adding all contents of the post to the card, post liking functionality kicks in. First of all, I designed it in a such way that like amount identificator and like logo are on the same line and if the like amount is equal to zero it isn't displaying at all. Then using click event listener on the like logo with an update like function fetch call is being run into this [URL](#update-post-like-postintpost_idupdate_like) and post like is being updated. Its response returns new amount and new status so with the use of that resources page reloading isn't required.
 
 ### Post comments
-In the end, every post is having its own comments section, which is populated with comments after clicking on it. To make that happen post id is being sent via fetch call. After getting post instance comments are being filtered based on that post, after receiving that response in JS, comments are appended to post at the bottom. Also, comment input is being displayed where the user can type a new comment and then save it. all this process runs without the requirement of refreshing the page. When a comment is created its dropdown is being added where are located comment edit and remove links. only its author can use this functionality. Also, comment has like icon where users can leave their reactions.
+In the end, every post is having its own comments section, which is populated with comments after clicking on it. To make that happen post id is being sent via fetch call into this [URL](#comments-postintpost_idcomments). After getting post instance comments are being filtered based on that post, after receiving that response in JS, comments are appended to post at the bottom. Also, comment input is being displayed where the user can type a new comment and then save it. all this process runs without the requirement of refreshing the page. When a comment is created its dropdown is being added where are located comment edit and remove links. only its author can use this functionality. Also, comment has like icon where users can leave their reactions.
 
 ### Updating comment
-I also added a dropdown menu for comments. If the comment author matches with the requested user they will have the ability to click on the dropdown button and then edit or delete a comment by sending comment id into URL and committing actions which were defined in python function.
+I also added a dropdown menu for comments. If the comment author matches with the requested user they will have the ability to click on the dropdown button and then edit or delete a comment by sending comment id into [URL](#comment-postintcomment_id) and committing actions which were defined in python function.
 
 ### Comment likes
-For comment liking defined update comment like function is being run. After successful fetch like is added or removed in dependence of resulting if statement and all data that was being returned from the response is used to update comment-state so there will be no requirement for the page to refresh. if a comment likes amount is equal to zero it will not be displayed.
+For comment liking defined update comment like function is being run. After successful fetch into this [URL](#update-comment-like-commentintcomment_idupdate_like) like is added or removed in dependence of resulting if statement and all data that was being returned from the response is used to update comment-state so there will be no requirement for the page to refresh. if a comment likes amount is equal to zero it will not be displayed.
 
 ### Favorites
-To make user access their favorite section where all favorite posts are stored first I’m checking if a user is signed in if not when he tries to create a new post is forced to log in.
+To make user access their [favorite](#favorites-load_postsfavorite) section where all favorite posts are stored first I’m checking if a user is signed in if not when he tries to create a new post is forced to log in.
 
 ### Updating favorites
-To add a post item to the user favorites section, the update favorite function is being run. It fetches into specified URL and in dependence of result of an if statement, post is being added to favorites or removed from it. 
+To add a post item to the user favorites section, the update favorite function is being run. It fetches into specified [URL](#update-favorites-postintpost_idupdate_favorites) and in dependence of result of an if statement, post is being added to favorites or removed from it. 
 
 ### Profile
-The user profile is being shown when clicking on post author username (by default first page of paginator is displayed), this process is feasible by fetching into profile URL with specified profile id. When unhiding profile with including data from response new post form disappears. In contrast to all posts page profile page only shows posts related to the profile which is being displayed.
+The user profile is being shown when clicking on post author username (by default first page of paginator is displayed), this process is feasible by fetching into [profile URL](#profile-profileintprofile_id) with specified profile id. When unhiding profile with including data from response new post form disappears. In contrast to all posts page profile page only shows posts related to the profile which is being displayed.
 
 [Back to Top](#cs50-final-project---meme-app)
 
