@@ -57,7 +57,8 @@ According to the specification, my project must adhere to the following guidelin
 I think my project meets these requirements for the following reasons:
 1. the website is entirely feasible and functional with a designed `API`.
 2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section`.
-3. Also the key function of my app is image uploading & downloading.
+
+The key desctinctive function of my app is represented in image uploading & downloading.
 
 > Your web application must utilize Django (including at least one model) on the back-end and JavaScript on the front-end.
  
@@ -166,10 +167,10 @@ create post function first gets all the data that is required to add a new post 
 pagination function is responsible for changing the page we want to access, so if the user will click on the "previous" button previous page will be loaded and vice versa if the user clicks on the "next" button next page will be displayed. besides these two buttons the user can click on any page he wants if it is possible.
 
 ### Loading posts
-everything starts after using DOMContentLoaded event listener, first I'm loading all posts which uses fetch call to the URL that returns JSON response of all objects from Post-class (by default first page of paginator is displayed), so then I can use JS for each command to build every post from its serialized values returned from the array. build post function itself takes a post as an input and then accesses its values using dot operator and key name specified after.
+everything starts after using DOMContentLoaded event listener, first I'm loading all posts which uses fetch call to the [URL](#load-posts-load_posts) that returns JSON response of all objects from Post-class (by default first page of paginator is displayed), so then I can use JS for each command to [build](#building-posts) every post from its serialized values returned from the array. build post function itself takes a post as an input and then accesses its values using dot operator and key name specified after.
 
 ### Building posts
-I used bootstrap cards for the container because it has responsive behavior. when a post image is created I'm setting its src attribute to post.image (in model serialize function post.image is equal to image URL so the image will display by its source). The drop-down menu helped me to have a simpler design. It stores four links which are responsible for post-editing and deleting (Those are feasible if request user matches with post author), image downloading (to make that happen I set its download and href attribute equal to post.image itself and also used re_path with download path in projects root urls.py), adding post into favorites.
+I used bootstrap cards for the container because it has responsive behavior. when a post image is created I'm setting its src attribute to post.image (in model serialize function post.image is equal to image URL so the image will display by its source). The drop-down menu helped me to have a simpler design. It stores four links which are responsible for post-[editing](#updating-post) and [deleting](#updating-post) (Those are feasible if request user matches with post author), image downloading (to make that happen I set its download and href attribute equal to post.image itself and also used re_path with download path in projects root urls.py), [adding post into favorites](#updating-favorites).
 
 ### Updating post
 After making sure that the post author matches with the requested user post can be edited or deleted. one uses the PUT request method and the second one DELETE. To update the post, a post id is required with a new description and a new image provided. I tried to populate a new image file field value with the existing image but I only could set it equal to an empty string.
