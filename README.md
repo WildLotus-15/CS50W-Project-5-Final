@@ -38,8 +38,10 @@ I think my project meets these requirements for the following reasons:
 2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section`.
 3. Also the key function of my app is image uploading & downloading.
 > Your web application must utilize Django (including at least one model) on the back-end and JavaScript on the front-end.
+ 
 My application was built using Django, including 4 models, and uses 1 JavaScript script to make dynamic updates. All generated information is saved in the default project generated sqlite3 database.
 > Your web application must be mobile-responsive
+
 Every page and feature of the web application is mobile-responsive and this is achieved using Bootstrap CSS.
 
 As for Complexity, I tried to have `user experience` on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like the `user favorite section` when a post is being removed, functionality is being chosen over comfort level. Also when a `post is created` page is reloaded to not make things more difficult.
