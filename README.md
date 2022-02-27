@@ -95,7 +95,7 @@ In the end, there is the usage of the `Django signal` which is being triggered a
 ## Routes
 
 ### Index `/`
-index function just returns index template
+index function just returns [Index](#index-memetemplatesmemeindexhtml) template
 
 ### Load posts `/load_posts`
 load posts function returns a JSON response. By setting the safe parameter's value to True I am allowing non-dictionary objects to be serialized from the Post model class. Also, I'm using the Djangos Paginator class to split the queryset into page objects and then using JS to implement pagination functionality.
@@ -133,13 +133,13 @@ update favorites function updates requested user’s individual favorites sectio
 profile function returns a specific serialized profile in relation to what pk value of it was sent from client-side
 
 ### Login `/login`
-login view handles user sign-in functionality. First, it is getting all required values to make that happen, username, and password that was been sent via the post request form. If a user with that inputted credentials exists in the database user is being authenticated and redirected to the index page. Else if there were sent invalid credentials, the message is being returned indicating that state. If the user just visits the login page template is being rendered.
+login view handles user sign-in functionality. First, it is getting all required values to make that happen, username, and password that was been sent via the post request form. If a user with that inputted credentials exists in the database user is being authenticated and redirected to the index page. Else if there were sent invalid credentials, the message is being returned indicating that state. If the user just visits the [login](#login-memetemplatesmemeloginhtml) template is being rendered.
 
 ### Logout `/logout`
 logout view simply logs out the currently signed-in user and then redirects it to the index page.
 
 ### Register `/register`
-register function handles user registration. First, it is getting all data that was being sent via the post request form: username, email, password, confirmation. Then it is making sure that password and confirmation values match (If not, the message is being returned informing that). Then it creates a user with gathered information and redirects it to the index page, after making sure that the user doesn't exist with the same credentials in the database (If so message is being returned to notify the user). If the intention was to just visit the registration page, the template is being returned.
+register function handles user registration. First, it is getting all data that was being sent via the post request form: username, email, password, confirmation. Then it is making sure that password and confirmation values match (If not, the message is being returned informing that). Then it creates a user with gathered information and redirects it to the index page, after making sure that the user doesn't exist with the same credentials in the database (If so message is being returned to notify the user). If the intention was to just visit the registration page, the [Register](#register-memetemplatesmemeregisterhtml) template is being returned.
 
 [Back to Top](#cs50-final-project---meme-app)
 ## templates
