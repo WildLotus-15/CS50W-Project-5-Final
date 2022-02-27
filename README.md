@@ -3,7 +3,7 @@
   - [Overview](#overview)
   - [Distinctiveness and Complexity](#distinctiveness-and-complexity)
   - [Settings](#settings)
-  - [Root Routes](#root-routes)
+  - [Root URLs](#root-urls)
   - [Models](#models)
   - [Routes](#routes)
     - [Index `/`](#index-)
@@ -75,7 +75,7 @@ Besides the default configuration of the project, I added the included app name 
 
 [Back to Top](#cs50-final-project---meme-app)
 
-## Root Routes
+## Root URLs
 I included the app URL in the project's default root. With the use of `re_path` and specified path, the `User` can download `Image`, following code on line 29 (extending URL patterns) gives an ability to access an actual image with its URL so then I can access them and then display it on the index page.
 
 [Back to Top](#cs50-final-project---meme-app)
