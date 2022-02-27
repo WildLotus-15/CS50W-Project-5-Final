@@ -232,8 +232,7 @@ Summary of created files:
 ## How to run the application
 1. Clone the repository.
 2. In your terminal `cd` into project5 directory.
-3. Run `python manage.py makemigrations meme` to make migrations for the meme app.
-4. Run `python manage.py migrate` to apply migrations to your database.
-5. Check the `requirements.txt` file to download the required Python packages.
+3. Check the `requirements.txt` file to download the required Python packages.
+4. run command `python manage.py runserver` in your terminal to start the development server.
 
 [Back to Top](#cs50-final-project---meme-app)
