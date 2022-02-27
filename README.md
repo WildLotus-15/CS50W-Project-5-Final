@@ -1,24 +1,44 @@
 # CS50 Final Project - Meme app
-[CS50 Final Project - Meme App](#cs50-final-project--meme-app)
+- [CS50 Final Project - Meme app](#cs50-final-project---meme-app)
   - [Overview](#overview)
   - [Distinctiveness and Complexity](#distinctiveness-and-complexity)
+  - [Settings](#settings)
+  - [Root Routes](#root-routes)
   - [Models](#models)
   - [Routes](#routes)
     - [Index `/`](#index-)
-    - [Load Posts `/load_posts`](#load-posts-load_posts)
-    - [New Post `/create_post`](#create-post-create_post)
-    - [Edit Post `/post/edit/<int:post_id>`](#edit-post-postint_post_id_edit)
-    - [Remove Post `/post/<int:post_id>/remove>`](#remove-post-postintpost_idremove)
-    - [Comment `/post/<int:post_id>/comment>`](#comment-postintcomment_id)
-    - [Update Comment Like `/comment/<int:comment_id>/update_like>`](#update-comment-like-commentintcomment_idupdate_like)
-    - [Update Comment Like `/comment/<int:comment_id>/update_like>`](#update-comment-like-commentintcomment_idupdate_like)
-    - [Comments `/post/<int:post_id>/comments>`](#comments-postintpost_idcomments)
-    - [Update Favorites `/post/<int:post_id>/update_favorites`](#favorites-load_postsfavorite)
-    - [Favorites `/load_posts/favorite`](#update-favorites-postintpost_idupdate_favorites)
+    - [Load posts `/load_posts`](#load-posts-load_posts)
+    - [Create post `/create_post`](#create-post-create_post)
+    - [Edit post `/post/<int_post_id:>/edit`](#edit-post-postint_post_idedit)
+    - [Remove post `/post/<int:post_id>/remove`](#remove-post-postintpost_idremove)
+    - [Comment `/post/<int:comment_id>`](#comment-postintcomment_id)
+    - [Update Comment Like `/comment/<int:comment_id>/update_like`](#update-comment-like-commentintcomment_idupdate_like)
+    - [Update Post Like `/post/<int:post_id/update_like>`](#update-post-like-postintpost_idupdate_like)
+    - [Comments `/post/<int:post_id>/comments`](#comments-postintpost_idcomments)
+    - [Favorites `/load_posts/favorite`](#favorites-load_postsfavorite)
+    - [Update Favorites `/post/<int:post_id>/update_favorites`](#update-favorites-postintpost_idupdate_favorites)
     - [Profile `/profile/<int:profile_id>`](#profile-profileintprofile_id)
     - [Login `/login`](#login-login)
-    - [Register `/register`](#register-student-register)-+
     - [Logout `/logout`](#logout-logout)
+    - [Register `/register`](#register-register)
+  - [templates](#templates)
+    - [Layout `/meme/templates/meme/layout.html`](#layout-memetemplatesmemelayouthtml)
+    - [Index `/meme/templates/meme/index.html`](#index-memetemplatesmemeindexhtml)
+    - [Login `/meme/templates/meme/login.html`](#login-memetemplatesmemeloginhtml)
+    - [Register `/meme/templates/meme/register.html`](#register-memetemplatesmemeregisterhtml)
+  - [Index.js `/meme/static/meme/index.js`](#indexjs-memestaticmemeindexjs)
+    - [Create post](#create-post)
+    - [Pagination](#pagination)
+    - [Loading posts](#loading-posts)
+    - [Building posts](#building-posts)
+    - [Updating post](#updating-post)
+    - [Updating post like](#updating-post-like)
+    - [Post comments](#post-comments)
+    - [Updating comment](#updating-comment)
+    - [Comment likes](#comment-likes)
+    - [Favorites](#favorites)
+    - [Updating favorites](#updating-favorites)
+    - [Profile](#profile)
   - [Files and directories](#files-and-directories)
   - [How to run the application](#how-to-run-the-application)
 ## Overview
@@ -37,9 +57,11 @@ I think my project meets these requirements for the following reasons:
 1. the website is entirely feasible and functional with a designed `API`.
 2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section`.
 3. Also the key function of my app is image uploading & downloading.
+
 > Your web application must utilize Django (including at least one model) on the back-end and JavaScript on the front-end.
  
 My application was built using Django, including 4 models, and uses 1 JavaScript script to make dynamic updates. All generated information is saved in the default project generated sqlite3 database.
+
 > Your web application must be mobile-responsive
 
 Every page and feature of the web application is mobile-responsive and this is achieved using Bootstrap CSS.
