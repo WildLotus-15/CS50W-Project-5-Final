@@ -17,7 +17,7 @@
     - [Favorites `/load_posts/favorite`](#update-favorites-postintpost_idupdate_favorites)
     - [Profile `/profile/<int:profile_id>`](#profile-profileintprofile_id)
     - [Login `/login`](#login-login)
-    - [Register `/register`](#register-student-register)
+    - [Register `/register`](#register-student-register)-+
     - [Logout `/logout`](#logout-logout)
   - [Files and directories](#files-and-directories)
   - [How to run the application](#how-to-run-the-application)
@@ -36,14 +36,12 @@ According to the specification, my project must adhere to the following guidelin
 I think my project meets these requirements for the following reasons:
 1. the website is entirely feasible and functional with a designed `API`.
 2. Implemented functionalities that other modern-day websites are having such as creating posts and modifying their state, leaving the comments with like reactions on them, and updating their status. Also having the ability to add the post into the individual "favorite" section`.
-3. Also image uploading and downloading is the part which satisfied me very much.
+3. Also the key function of my app is image uploading & downloading.
 > Your web application must utilize Django (including at least one model) on the back-end and JavaScript on the front-end.
 My application was built using Django, including 4 models, and uses 1 JavaScript script to make dynamic updates. All generated information is saved in the default project generated sqlite3 database.
 > Your web application must be mobile-responsive
 Every page and feature of the web application is mobile-responsive and this is achieved using Bootstrap CSS.
-[Back to Top](#cs50-final-project---meme-app)
- 
-### Complexity
+
 As for Complexity, I tried to have `user experience` on the highest level this is manifested in the fact that in most actions, page reloading isn't required. But in some places like the `user favorite section` when a post is being removed, functionality is being chosen over comfort level. Also when a `post is created` page is reloaded to not make things more difficult.
 
 [Back to Top](#cs50-final-project---meme-app)
@@ -212,6 +210,6 @@ Summary of created files:
 2. In your terminal `cd` into project5 directory.
 3. Run `python manage.py makemigrations meme` to make migrations for the meme app.
 4. Run `python manage.py migrate` to apply migrations to your database.
-5. Check `requirements.txt` file to download required Python packages.
+5. Check the `requirements.txt` file to download the required Python packages.
 
 [Back to Top](cs50-final-project---meme-app)

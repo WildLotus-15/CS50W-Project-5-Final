@@ -1,1 +1,2 @@
-In your terminal, run "pip3 install pillow" to install the Pillow package that Python uses to process images.
+1. Ensure that you are having Django framework installed. If not run "pip3 install django" in your terminal.
+2. In your terminal, run "pip3 install pillow" to install the Pillow package that Python uses to process images.
