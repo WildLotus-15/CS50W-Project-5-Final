@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector('#profile').style.display = 'none'
 
     if (document.getElementById('favorite')) {
-        document.getElementById('favorite').addEventListener('click', () => load_posts('/favorite'))
+        document.getElementById('favorite').addEventListener('click', () => load_posts('/favorite', 1))
     } else {
         document.getElementById(`newPost`).addEventListener('click', () => force_login())
     }
@@ -315,7 +315,7 @@ function build_comment(comment, post_id) {
         comment_delete.href = "#"
         comment_delete.className = "dropdown-item"
         comment_delete.id = `post-comment-remove-${comment.id}`
-        comment_delete.innerHTML = "DELETE"
+        comment_delete.innerHTML = "Delete"
         comment_dropdown_menu.append(comment_delete)
 
         comment_delete.addEventListener('click', () => delete_comment(comment, post_id))

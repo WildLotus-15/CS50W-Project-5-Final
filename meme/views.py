@@ -92,7 +92,7 @@ def update_favorites(request, post_id):
 
 
 def favorites(request):
-    posts = request.user.profile.favorites.all()
+    posts = request.user.profile.favorites.order_by('-timestamp').all()
     paginator = Paginator(posts, 10)
     page_obj = paginator.get_page(request.GET.get("page"))
     return JsonResponse({
@@ -178,6 +178,7 @@ def register(request):
 
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
+
         if password != confirmation:
             return render(request, "chess/register.html", {
                 "message": "Passwords must match."
